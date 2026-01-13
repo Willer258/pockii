@@ -69,13 +69,10 @@ class AppDatabase extends _$AppDatabase {
 /// Opens an encrypted database connection using SQLCipher.
 LazyDatabase _openConnection(String encryptionKey) {
   return LazyDatabase(() async {
-    // Setup SQLCipher before opening
-    await setupSqlCipher();
-
     final dbFolder = await getApplicationDocumentsDirectory();
     final file = File(p.join(dbFolder.path, AppConstants.databaseName));
 
-    return NativeDatabase.createInBackground(
+    return NativeDatabase(
       file,
       setup: (db) {
         // Set the encryption key using PRAGMA

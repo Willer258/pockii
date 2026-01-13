@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+import 'core/database/app_database.dart';
 import 'core/database/database_provider.dart';
 import 'core/router/app_router.dart';
 import 'core/services/background_task_manager.dart';
@@ -10,6 +11,9 @@ import 'core/theme/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize SQLCipher before any database access
+  await setupSqlCipher();
 
   // Initialize French locale for date formatting
   await initializeDateFormatting('fr_FR', null);
