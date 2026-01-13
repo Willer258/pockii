@@ -196,4 +196,5 @@ CustomTransitionPage<void> _buildTransitionPage({
 /// Call this after completing onboarding to ensure redirect works.
 void invalidateOnboardingCache(WidgetRef ref) {
   ref.invalidate(_onboardingCompletedCacheProvider);
+  ref.invalidate(onboardingCompletedProvider);
 }

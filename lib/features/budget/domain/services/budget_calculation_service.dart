@@ -44,6 +44,13 @@ class BudgetCalculationResult {
   /// True if a time inconsistency was detected (clock moved backward)
   final bool hasTimeInconsistency;
 
+  /// Remaining budget before planned expenses are deducted.
+  /// This is the "current" balance the user actually has available.
+  int get remainingBeforePlanned => remainingBudget + totalPlannedExpenses;
+
+  /// Whether there are pending planned expenses affecting the budget.
+  bool get hasPlannedExpenses => totalPlannedExpenses > 0;
+
   /// Percentage of budget remaining (0.0 to 1.0)
   double get percentageRemaining {
     if (totalBudget <= 0) return 0;

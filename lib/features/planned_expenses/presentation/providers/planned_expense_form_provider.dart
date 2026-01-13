@@ -130,6 +130,11 @@ class PlannedExpenseFormNotifier extends StateNotifier<PlannedExpenseFormState> 
     state = state.copyWith(amountFcfa: 0, clearError: true);
   }
 
+  /// Sets the amount directly (used with system keyboard).
+  void setAmount(int amount) {
+    state = state.copyWith(amountFcfa: amount, clearError: true);
+  }
+
   /// Sets the expected date.
   void setExpectedDate(DateTime date) {
     state = state.copyWith(expectedDate: date, clearError: true);

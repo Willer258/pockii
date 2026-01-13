@@ -22,6 +22,7 @@ class BudgetState {
     required this.remainingBudget,
     required this.periodStart,
     required this.periodEnd,
+    this.pendingPlannedExpenses = 0,
     this.isLoading = false,
     this.error,
     this.hasTimeInconsistency = false,
@@ -92,6 +93,16 @@ class BudgetState {
   /// Whether a time inconsistency was detected (clock moved backward)
   final bool hasTimeInconsistency;
 
+  /// Total amount of pending planned expenses (in FCFA)
+  final int pendingPlannedExpenses;
+
+  /// Remaining budget before planned expenses are deducted.
+  /// This is the "current" balance before future commitments.
+  int get remainingBeforePlanned => remainingBudget + pendingPlannedExpenses;
+
+  /// Whether there are pending planned expenses.
+  bool get hasPlannedExpenses => pendingPlannedExpenses > 0;
+
   /// Percentage of budget remaining (0.0 to 1.0+)
   ///
   /// Returns 0 if total budget is zero or negative.
@@ -127,6 +138,7 @@ class BudgetState {
     int? remainingBudget,
     DateTime? periodStart,
     DateTime? periodEnd,
+    int? pendingPlannedExpenses,
     bool? isLoading,
     String? error,
     bool? hasTimeInconsistency,
@@ -136,6 +148,8 @@ class BudgetState {
       remainingBudget: remainingBudget ?? this.remainingBudget,
       periodStart: periodStart ?? this.periodStart,
       periodEnd: periodEnd ?? this.periodEnd,
+      pendingPlannedExpenses:
+          pendingPlannedExpenses ?? this.pendingPlannedExpenses,
       isLoading: isLoading ?? this.isLoading,
       error: error,
       hasTimeInconsistency: hasTimeInconsistency ?? this.hasTimeInconsistency,
@@ -150,6 +164,7 @@ class BudgetState {
         other.remainingBudget == remainingBudget &&
         other.periodStart == periodStart &&
         other.periodEnd == periodEnd &&
+        other.pendingPlannedExpenses == pendingPlannedExpenses &&
         other.isLoading == isLoading &&
         other.error == error &&
         other.hasTimeInconsistency == hasTimeInconsistency;
@@ -162,6 +177,7 @@ class BudgetState {
       remainingBudget,
       periodStart,
       periodEnd,
+      pendingPlannedExpenses,
       isLoading,
       error,
       hasTimeInconsistency,

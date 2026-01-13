@@ -4,8 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
-import '../../../transactions/presentation/widgets/amount_display.dart';
-import '../../../transactions/presentation/widgets/numeric_keypad.dart';
 import '../../data/subscription_repository.dart';
 import '../../domain/models/subscription_frequency.dart';
 import '../../domain/models/subscription_model.dart';
@@ -39,6 +37,7 @@ class SubscriptionFormScreen extends ConsumerStatefulWidget {
 class _SubscriptionFormScreenState
     extends ConsumerState<SubscriptionFormScreen> {
   final _nameController = TextEditingController();
+  final _amountController = TextEditingController();
   final _nameFocusNode = FocusNode();
   bool _isSubmitting = false;
 
@@ -49,6 +48,7 @@ class _SubscriptionFormScreenState
     if (widget.isEditMode) {
       final sub = widget.subscription!;
       _nameController.text = sub.name;
+      _amountController.text = sub.amountFcfa > 0 ? sub.amountFcfa.toString() : '';
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final formNotifier = ref.read(subscriptionFormProvider.notifier);
@@ -60,6 +60,7 @@ class _SubscriptionFormScreenState
   @override
   void dispose() {
     _nameController.dispose();
+    _amountController.dispose();
     _nameFocusNode.dispose();
     super.dispose();
   }
@@ -188,11 +189,32 @@ class _SubscriptionFormScreenState
 
               const SizedBox(height: AppSpacing.lg),
 
-              // Amount display with validation
-              AmountDisplay(
-                amountFcfa: formState.amountFcfa,
-                showError: formState.showAmountError,
-                errorMessage: 'Montant requis',
+              // Amount input with system keyboard
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                child: TextField(
+                  controller: _amountController,
+                  keyboardType: TextInputType.number,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: 'Montant',
+                    hintText: '0',
+                    suffixText: 'FCFA',
+                    border: const OutlineInputBorder(),
+                    errorText: formState.showAmountError ? 'Montant requis' : null,
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  onChanged: (value) {
+                    final amount = int.tryParse(value) ?? 0;
+                    formNotifier.setAmount(amount);
+                  },
+                ),
               ),
 
               const SizedBox(height: AppSpacing.md),
@@ -317,14 +339,6 @@ class _SubscriptionFormScreenState
 
               const SizedBox(height: AppSpacing.lg),
 
-              // Numeric keypad
-              NumericKeypad(
-                onDigitPressed: formNotifier.addDigit,
-                onBackspacePressed: formNotifier.removeDigit,
-              ),
-
-              const SizedBox(height: AppSpacing.lg),
-
               // Submit button
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
@@ -369,6 +383,8 @@ class _SubscriptionFormScreenState
       case SubscriptionFrequency.weekly:
         return 'Jour de la semaine';
       case SubscriptionFrequency.monthly:
+      case SubscriptionFrequency.quarterly:
+      case SubscriptionFrequency.biannual:
       case SubscriptionFrequency.yearly:
         return 'Jour du mois';
     }

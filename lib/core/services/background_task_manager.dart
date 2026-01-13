@@ -4,6 +4,7 @@ import 'package:workmanager/workmanager.dart';
 import '../database/app_database.dart';
 import '../database/daos/app_settings_dao.dart';
 import '../database/daos/budget_periods_dao.dart';
+import '../database/daos/planned_expenses_dao.dart';
 import '../database/daos/streaks_dao.dart';
 import '../database/daos/subscriptions_dao.dart';
 import '../database/daos/transactions_dao.dart';
@@ -13,6 +14,7 @@ import 'encryption_service.dart';
 import 'notification_limiter.dart';
 import 'notification_preferences.dart';
 import 'notification_service.dart';
+import 'planned_expense_reminder_tracker.dart';
 import 'streak_celebration_tracker.dart';
 import 'subscription_reminder_tracker.dart';
 
@@ -22,6 +24,7 @@ abstract class BackgroundTasks {
   static const streakCheck = 'streak_check';
   static const budgetCheck = 'budget_check';
   static const subscriptionReminder = 'subscription_reminder';
+  static const plannedExpenseReminder = 'planned_expense_reminder';
 }
 
 /// Manager for background tasks using WorkManager.
@@ -105,6 +108,7 @@ void callbackDispatcher() {
       final transactionsDao = TransactionsDao(db);
       final budgetPeriodsDao = BudgetPeriodsDao(db);
       final subscriptionsDao = SubscriptionsDao(db);
+      final plannedExpensesDao = PlannedExpensesDao(db);
       final appSettingsDao = AppSettingsDao(db, clock: clock);
 
       // Initialize notification service and trackers
@@ -112,6 +116,10 @@ void callbackDispatcher() {
       await notificationService.initialize();
       final budgetTracker = BudgetNotificationTracker(settingsDao: appSettingsDao);
       final subscriptionTracker = SubscriptionReminderTracker(
+        settingsDao: appSettingsDao,
+        clock: clock,
+      );
+      final plannedExpenseTracker = PlannedExpenseReminderTracker(
         settingsDao: appSettingsDao,
         clock: clock,
       );
@@ -152,6 +160,16 @@ void callbackDispatcher() {
           clock,
           notificationService,
           subscriptionTracker,
+          notificationLimiter,
+        );
+      }
+      // Planned expense reminders (reuse subscription reminder preference)
+      if (await notificationPrefs.areSubscriptionRemindersEnabled()) {
+        await _executePlannedExpenseReminder(
+          plannedExpensesDao,
+          clock,
+          notificationService,
+          plannedExpenseTracker,
           notificationLimiter,
         );
       }
@@ -503,6 +521,114 @@ Future<void> _executeSubscriptionReminder(
         // Still mark as reminded so we don't try again
         await reminderTracker.markMultipleAsReminded(
           toRemind.map((s) => s.id).toList(),
+        );
+      }
+    }
+  } catch (e) {
+    // Silently fail - don't crash the background task
+  }
+}
+
+/// Check for upcoming planned expenses and send reminders.
+///
+/// Sends notifications for planned expenses due today or overdue.
+Future<void> _executePlannedExpenseReminder(
+  PlannedExpensesDao plannedExpensesDao,
+  Clock clock,
+  NotificationService notificationService,
+  PlannedExpenseReminderTracker reminderTracker,
+  NotificationLimiter limiter,
+) async {
+  try {
+    final now = clock.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    // Get pending planned expenses
+    final pendingExpenses = await plannedExpensesDao.getPendingPlannedExpenses();
+    if (pendingExpenses.isEmpty) return;
+
+    // Find expenses due today or overdue (within 1 day window)
+    final dueSoon = <({int id, String description, int amount, int daysUntil})>[];
+
+    for (final expense in pendingExpenses) {
+      final dueDate = DateTime(
+        expense.expectedDate.year,
+        expense.expectedDate.month,
+        expense.expectedDate.day,
+      );
+      final daysUntil = dueDate.difference(today).inDays;
+
+      // Notify for expenses due today, tomorrow, or overdue
+      if (daysUntil <= 1) {
+        dueSoon.add((
+          id: expense.id,
+          description: expense.description,
+          amount: expense.amountFcfa,
+          daysUntil: daysUntil,
+        ));
+      }
+    }
+
+    if (dueSoon.isEmpty) return;
+
+    // Filter out expenses that were already reminded today
+    final expenseIds = dueSoon.map((e) => e.id).toList();
+    final unremindedIds = await reminderTracker.filterUnreminded(expenseIds);
+
+    if (unremindedIds.isEmpty) return;
+
+    // Filter dueSoon to only include unreminded expenses
+    final toRemind = dueSoon.where((e) => unremindedIds.contains(e.id)).toList();
+
+    if (toRemind.isEmpty) return;
+
+    // Check notification limit
+    final canSend = await limiter.canSendNotification();
+
+    // If only one expense, send individual notification
+    if (toRemind.length == 1) {
+      final expense = toRemind.first;
+      if (canSend == NotificationLimitResult.allowed) {
+        await notificationService.showPlannedExpenseReminder(
+          description: expense.description,
+          amountFcfa: expense.amount,
+          daysUntilDue: expense.daysUntil,
+        );
+        await limiter.recordNotificationSent();
+        await reminderTracker.markAsReminded(expense.id);
+      } else {
+        // Queue for later
+        final dueText = expense.daysUntil <= 0
+            ? 'maintenant'
+            : 'dans ${expense.daysUntil} jour${expense.daysUntil > 1 ? 's' : ''}';
+        await limiter.queueNotification(
+          type: 'planned_expense_reminder',
+          title: expense.description,
+          body: '${expense.amount} FCFA $dueText',
+        );
+        await reminderTracker.markAsReminded(expense.id);
+      }
+    } else {
+      // Multiple expenses - send grouped notification
+      final total = toRemind.fold<int>(0, (sum, e) => sum + e.amount);
+      if (canSend == NotificationLimitResult.allowed) {
+        await notificationService.showGroupedPlannedExpenseReminder(
+          count: toRemind.length,
+          totalAmountFcfa: total,
+        );
+        await limiter.recordNotificationSent();
+        await reminderTracker.markMultipleAsReminded(
+          toRemind.map((e) => e.id).toList(),
+        );
+      } else {
+        // Queue for later
+        await limiter.queueNotification(
+          type: 'planned_expense_reminder_grouped',
+          title: '${toRemind.length} dépenses programmées',
+          body: 'Total: $total FCFA',
+        );
+        await reminderTracker.markMultipleAsReminded(
+          toRemind.map((e) => e.id).toList(),
         );
       }
     }

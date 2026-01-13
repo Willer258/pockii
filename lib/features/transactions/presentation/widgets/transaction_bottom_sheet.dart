@@ -15,9 +15,7 @@ import '../../data/transaction_repository.dart';
 import '../../domain/models/transaction_model.dart';
 import '../../domain/models/transaction_type.dart';
 import '../providers/transaction_form_provider.dart';
-import 'amount_display.dart';
 import 'category_chip_row.dart';
-import 'numeric_keypad.dart';
 
 /// A bottom sheet for adding or editing a transaction (expense or income).
 ///
@@ -82,6 +80,7 @@ class TransactionBottomSheet extends ConsumerStatefulWidget {
 class _TransactionBottomSheetState
     extends ConsumerState<TransactionBottomSheet> {
   final _noteController = TextEditingController();
+  final _amountController = TextEditingController();
   bool _isSubmitting = false;
   DateTime? _selectedDate;
 
@@ -92,6 +91,7 @@ class _TransactionBottomSheetState
     if (widget.isEditMode) {
       final tx = widget.editTransaction!;
       _noteController.text = tx.note ?? '';
+      _amountController.text = tx.amountFcfa > 0 ? tx.amountFcfa.toString() : '';
       _selectedDate = tx.date;
 
       // Initialize the form provider with existing data after first frame
@@ -110,6 +110,7 @@ class _TransactionBottomSheetState
   @override
   void dispose() {
     _noteController.dispose();
+    _amountController.dispose();
     super.dispose();
   }
 
@@ -346,11 +347,41 @@ class _TransactionBottomSheetState
 
               const SizedBox(height: AppSpacing.md),
 
-              // Amount display with validation
-              AmountDisplay(
-                amountFcfa: formState.amountFcfa,
-                showError: formState.showAmountError,
-                errorMessage: 'Montant requis',
+              // Amount input with system keyboard
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                child: TextField(
+                  controller: _amountController,
+                  keyboardType: TextInputType.number,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: '0',
+                    hintStyle: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.onSurfaceVariant.withValues(alpha: 0.5),
+                    ),
+                    suffixText: 'FCFA',
+                    suffixStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.onSurfaceVariant,
+                    ),
+                    border: const OutlineInputBorder(),
+                    errorText: formState.showAmountError ? 'Montant requis' : null,
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  onChanged: (value) {
+                    final amount = int.tryParse(value) ?? 0;
+                    formNotifier.setAmount(amount);
+                  },
+                ),
               ),
 
               const SizedBox(height: AppSpacing.md),
@@ -395,14 +426,6 @@ class _TransactionBottomSheetState
                     alignment: Alignment.centerLeft,
                   ),
                 ),
-              ),
-
-              const SizedBox(height: AppSpacing.md),
-
-              // Numeric keypad
-              NumericKeypad(
-                onDigitPressed: formNotifier.addDigit,
-                onBackspacePressed: formNotifier.removeDigit,
               ),
 
               const SizedBox(height: AppSpacing.md),

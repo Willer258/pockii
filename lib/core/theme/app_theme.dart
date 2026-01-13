@@ -190,10 +190,10 @@ class AppTheme {
         foregroundColor: colorScheme.onPrimary,
         elevation: 4,
         highlightElevation: 8,
-        shape: const CircleBorder(),
-        sizeConstraints: BoxConstraints.tight(
-          Size(AppSpacing.fabSize, AppSpacing.fabSize),
-        ),
+        // Use stadium shape to support both regular and extended FABs
+        shape: const StadiumBorder(),
+        // Remove fixed size constraints to allow extended FAB to size properly
+        // Regular FABs will use their default size
       ),
 
       // ============================================

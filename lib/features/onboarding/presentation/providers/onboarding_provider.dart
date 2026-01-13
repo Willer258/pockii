@@ -98,11 +98,15 @@ class OnboardingNotifier extends StateNotifier<OnboardingState> {
         budgetAmount: state.budgetAmount,
       );
       return true;
-    } catch (e) {
+    } catch (e, stackTrace) {
+      // ignore: avoid_print
+      print('Onboarding error: $e');
+      // ignore: avoid_print
+      print('Stack trace: $stackTrace');
       state = OnboardingState(
         currentPage: state.currentPage,
         budgetAmount: state.budgetAmount,
-        error: 'Erreur lors de la sauvegarde',
+        error: 'Erreur: $e',
       );
       return false;
     }

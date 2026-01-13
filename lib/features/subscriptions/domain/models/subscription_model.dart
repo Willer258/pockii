@@ -96,6 +96,8 @@ class SubscriptionModel {
   /// Calculates the monthly equivalent amount for this subscription.
   ///
   /// Weekly subscriptions are multiplied by 4.33 (average weeks per month).
+  /// Quarterly subscriptions are divided by 3.
+  /// Bi-annual subscriptions are divided by 6.
   /// Yearly subscriptions are divided by 12.
   int get monthlyEquivalent {
     switch (frequency) {
@@ -104,6 +106,12 @@ class SubscriptionModel {
       case SubscriptionFrequency.weekly:
         // Approximate 4.33 weeks per month
         return (amountFcfa * 433 / 100).round();
+      case SubscriptionFrequency.quarterly:
+        // Divide by 3 months
+        return (amountFcfa / 3).round();
+      case SubscriptionFrequency.biannual:
+        // Divide by 6 months
+        return (amountFcfa / 6).round();
       case SubscriptionFrequency.yearly:
         // Divide by 12 months
         return (amountFcfa / 12).round();

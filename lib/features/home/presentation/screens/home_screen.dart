@@ -8,6 +8,8 @@ import '../../../history/presentation/providers/history_provider.dart';
 import '../../../streaks/presentation/widgets/streak_badge.dart';
 import '../widgets/budget_hero_card.dart';
 import '../widgets/month_end_summary_card.dart';
+import '../widgets/recent_transactions_section.dart';
+import '../widgets/upcoming_expenses_section.dart';
 
 /// The main home screen of the app.
 ///
@@ -77,10 +79,17 @@ class HomeScreen extends ConsumerWidget {
                 error: (_, __) => const SizedBox.shrink(),
               ),
 
+              const SizedBox(height: AppSpacing.md),
+
+              // Upcoming planned expenses section
+              const UpcomingExpensesSection(),
+
               const SizedBox(height: AppSpacing.sectionSpacing),
-              // Empty state or transactions preview
-              if (!hasTransactions) EmptyStateWidget.home(),
-              // Recent transactions preview could be added here in the future
+              // Empty state or recent transactions
+              if (!hasTransactions)
+                EmptyStateWidget.home()
+              else
+                const RecentTransactionsSection(),
             ],
           ),
         ),

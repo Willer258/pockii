@@ -91,6 +91,9 @@ class PlannedExpenseModel {
   /// Returns true if this planned expense has been cancelled.
   bool get isCancelled => status == PlannedExpenseStatus.cancelled;
 
+  /// Returns true if this planned expense has been postponed.
+  bool get isPostponed => status == PlannedExpenseStatus.postponed;
+
   /// Converts this model to a drift PlannedExpensesCompanion for insertion.
   ///
   /// The [id] is not included as it's auto-generated.

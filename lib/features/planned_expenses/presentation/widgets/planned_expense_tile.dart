@@ -149,7 +149,7 @@ class _LeadingIcon extends StatelessWidget {
   }
 }
 
-/// Status badge for completed expenses.
+/// Status badge for completed/postponed expenses.
 class _StatusBadge extends StatelessWidget {
   const _StatusBadge({required this.status});
 
@@ -157,7 +157,21 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isConverted = status == PlannedExpenseStatus.converted;
+    Color backgroundColor;
+    Color textColor;
+
+    switch (status) {
+      case PlannedExpenseStatus.converted:
+        backgroundColor = AppColors.success.withValues(alpha: 0.1);
+        textColor = AppColors.success;
+      case PlannedExpenseStatus.postponed:
+        backgroundColor = BudgetColors.warning.withValues(alpha: 0.1);
+        textColor = BudgetColors.warning;
+      case PlannedExpenseStatus.cancelled:
+      case PlannedExpenseStatus.pending:
+        backgroundColor = AppColors.outlineVariant;
+        textColor = AppColors.onSurfaceVariant;
+    }
 
     return Container(
       margin: const EdgeInsets.only(left: AppSpacing.xs),
@@ -166,16 +180,14 @@ class _StatusBadge extends StatelessWidget {
         vertical: 2,
       ),
       decoration: BoxDecoration(
-        color: isConverted
-            ? AppColors.success.withValues(alpha: 0.1)
-            : AppColors.outlineVariant,
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
         status.displayName,
         style: TextStyle(
           fontSize: 10,
-          color: isConverted ? AppColors.success : AppColors.onSurfaceVariant,
+          color: textColor,
         ),
       ),
     );
@@ -200,10 +212,20 @@ class _DaysUntilLabel extends StatelessWidget {
     Color color;
 
     if (isCompleted) {
-      text = status == PlannedExpenseStatus.converted
-          ? 'Payé'
-          : 'Annulé';
-      color = AppColors.onSurfaceVariant;
+      switch (status) {
+        case PlannedExpenseStatus.converted:
+          text = 'Payé';
+          color = AppColors.onSurfaceVariant;
+        case PlannedExpenseStatus.cancelled:
+          text = 'Annulé';
+          color = AppColors.onSurfaceVariant;
+        case PlannedExpenseStatus.postponed:
+          text = 'Reporté';
+          color = BudgetColors.warning;
+        case PlannedExpenseStatus.pending:
+          text = '';
+          color = AppColors.onSurfaceVariant;
+      }
     } else if (daysUntil < 0) {
       text = 'En retard de ${-daysUntil} jour${-daysUntil > 1 ? 's' : ''}';
       color = AppColors.error;

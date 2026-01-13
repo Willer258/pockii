@@ -56,8 +56,9 @@ class _BudgetCard extends StatelessWidget {
       budgetState.percentageRemaining,
     );
 
+    // Show current balance (before planned expenses)
     final formattedAmount = FcfaFormatter.formatCompact(
-      budgetState.remainingBudget,
+      budgetState.remainingBeforePlanned,
     );
     final progressValue = budgetState.percentageRemaining.clamp(0.0, 1.0);
 
@@ -91,7 +92,7 @@ class _BudgetCard extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.sm),
 
-              // Hero number
+              // Hero number (current balance)
               AnimatedDefaultTextStyle(
                 duration: const Duration(milliseconds: 300),
                 style: AppTypography.hero.copyWith(color: statusColor),
@@ -106,6 +107,42 @@ class _BudgetCard extends StatelessWidget {
                   color: statusColor,
                 ),
               ),
+
+              // Projected balance (if there are planned expenses)
+              if (budgetState.hasPlannedExpenses) ...[
+                const SizedBox(height: AppSpacing.sm),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .surfaceContainerHighest
+                        .withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(AppBorderRadius.chip),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.schedule,
+                        size: 14,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: AppSpacing.xs),
+                      Text(
+                        '→ ${FcfaFormatter.format(budgetState.remainingBudget)} après engagements',
+                        style: AppTypography.caption.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+
               const SizedBox(height: AppSpacing.lg),
 
               // Progress bar
@@ -127,7 +164,7 @@ class _BudgetCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Dépensé: ${FcfaFormatter.format(budgetState.totalBudget - budgetState.remainingBudget)}',
+                    'Dépensé: ${FcfaFormatter.format(budgetState.totalBudget - budgetState.remainingBeforePlanned)}',
                     style: AppTypography.caption.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
@@ -151,9 +188,12 @@ class _BudgetCard extends StatelessWidget {
     final status = BudgetColors.accessibilityLabel(
       budgetState.percentageRemaining,
     );
-    final amount = FcfaFormatter.formatCompact(budgetState.remainingBudget);
+    final amount = FcfaFormatter.formatCompact(budgetState.remainingBeforePlanned);
+    final projected = budgetState.hasPlannedExpenses
+        ? ' Après engagements: ${FcfaFormatter.formatCompact(budgetState.remainingBudget)} francs CFA.'
+        : '';
 
-    return '$status. Reste à vivre: $amount francs CFA. '
+    return '$status. Reste à vivre: $amount francs CFA.$projected '
         '$monthLabel.';
   }
 }

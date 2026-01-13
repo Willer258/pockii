@@ -128,6 +128,11 @@ class TransactionFormNotifier extends StateNotifier<TransactionFormState> {
     state = state.copyWith(amountFcfa: 0);
   }
 
+  /// Sets the amount directly (used with system keyboard input).
+  void setAmount(int amount) {
+    state = state.copyWith(amountFcfa: amount, hasInteracted: true);
+  }
+
   /// Sets the selected category.
   void setCategory(String category) {
     state = state.copyWith(category: category);

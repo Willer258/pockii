@@ -3,6 +3,7 @@
 /// - pending: Not yet paid, still deducted from budget
 /// - converted: Paid and converted to a transaction
 /// - cancelled: Cancelled, no longer deducted from budget
+/// - postponed: Temporarily postponed, still tracked but not deducted
 enum PlannedExpenseStatus {
   /// Not yet paid, still deducted from budget.
   pending,
@@ -11,7 +12,10 @@ enum PlannedExpenseStatus {
   converted,
 
   /// Cancelled, no longer deducted from budget.
-  cancelled;
+  cancelled,
+
+  /// Temporarily postponed, still tracked but not deducted.
+  postponed;
 
   /// Converts this enum to a database string value.
   String toDbValue() {
@@ -22,6 +26,8 @@ enum PlannedExpenseStatus {
         return 'converted';
       case PlannedExpenseStatus.cancelled:
         return 'cancelled';
+      case PlannedExpenseStatus.postponed:
+        return 'postponed';
     }
   }
 
@@ -34,6 +40,8 @@ enum PlannedExpenseStatus {
         return 'Payé';
       case PlannedExpenseStatus.cancelled:
         return 'Annulé';
+      case PlannedExpenseStatus.postponed:
+        return 'Reporté';
     }
   }
 }
@@ -51,6 +59,8 @@ extension PlannedExpenseStatusParser on String {
         return PlannedExpenseStatus.converted;
       case 'cancelled':
         return PlannedExpenseStatus.cancelled;
+      case 'postponed':
+        return PlannedExpenseStatus.postponed;
       default:
         return PlannedExpenseStatus.pending;
     }

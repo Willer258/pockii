@@ -132,6 +132,10 @@ class SubscriptionTile extends StatelessWidget {
         return 'Chaque ${days[subscription.dueDay - 1]}';
       case SubscriptionFrequency.monthly:
         return 'Le ${subscription.dueDay} du mois';
+      case SubscriptionFrequency.quarterly:
+        return 'Le ${subscription.dueDay} (trimestre)';
+      case SubscriptionFrequency.biannual:
+        return 'Le ${subscription.dueDay} (semestre)';
       case SubscriptionFrequency.yearly:
         return 'Le ${subscription.dueDay} (annuel)';
     }
@@ -143,6 +147,10 @@ class SubscriptionTile extends StatelessWidget {
         return '/semaine';
       case SubscriptionFrequency.monthly:
         return '/mois';
+      case SubscriptionFrequency.quarterly:
+        return '/trim.';
+      case SubscriptionFrequency.biannual:
+        return '/sem.';
       case SubscriptionFrequency.yearly:
         return '/an';
     }

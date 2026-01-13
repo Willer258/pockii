@@ -64,6 +64,8 @@ class SubscriptionFormState {
       case SubscriptionFrequency.weekly:
         return 7;
       case SubscriptionFrequency.monthly:
+      case SubscriptionFrequency.quarterly:
+      case SubscriptionFrequency.biannual:
       case SubscriptionFrequency.yearly:
         return 31;
     }

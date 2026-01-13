@@ -33,6 +33,7 @@ class BudgetStateNotifier extends StateNotifier<BudgetState> {
         remainingBudget: result.remainingBudget,
         periodStart: result.periodStart,
         periodEnd: result.periodEnd,
+        pendingPlannedExpenses: result.totalPlannedExpenses,
         hasTimeInconsistency: result.hasTimeInconsistency,
       );
     } on Exception catch (e) {

@@ -128,6 +128,20 @@ class PlannedExpenseRepository {
     return _dao.markAsCancelled(id);
   }
 
+  /// Marks a planned expense as postponed.
+  ///
+  /// Returns true if the update was successful.
+  Future<bool> markAsPostponed(int id) {
+    return _dao.markAsPostponed(id);
+  }
+
+  /// Marks a planned expense as pending (reactivate from postponed).
+  ///
+  /// Returns true if the update was successful.
+  Future<bool> markAsPending(int id) {
+    return _dao.markAsPending(id);
+  }
+
   // ============== REACTIVE STREAMS ==============
 
   /// Watches all planned expenses for reactive updates.

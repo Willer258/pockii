@@ -173,6 +173,42 @@ class PlannedExpensesDao extends DatabaseAccessor<AppDatabase>
     return updatePlannedExpense(updated);
   }
 
+  /// Marks a planned expense as postponed.
+  Future<bool> markAsPostponed(int id) async {
+    final existing = await getPlannedExpenseById(id);
+    if (existing == null) return false;
+
+    final updated = PlannedExpense(
+      id: existing.id,
+      description: existing.description,
+      amountFcfa: existing.amountFcfa,
+      expectedDate: existing.expectedDate,
+      status: 'postponed',
+      category: existing.category,
+      createdAt: existing.createdAt,
+      updatedAt: DateTime.now(),
+    );
+    return updatePlannedExpense(updated);
+  }
+
+  /// Marks a planned expense as pending (reactivate from postponed).
+  Future<bool> markAsPending(int id) async {
+    final existing = await getPlannedExpenseById(id);
+    if (existing == null) return false;
+
+    final updated = PlannedExpense(
+      id: existing.id,
+      description: existing.description,
+      amountFcfa: existing.amountFcfa,
+      expectedDate: existing.expectedDate,
+      status: 'pending',
+      category: existing.category,
+      createdAt: existing.createdAt,
+      updatedAt: DateTime.now(),
+    );
+    return updatePlannedExpense(updated);
+  }
+
   // ============== REACTIVE STREAMS ==============
 
   /// Watches all planned expenses for reactive updates.

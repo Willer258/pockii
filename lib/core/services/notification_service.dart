@@ -213,6 +213,57 @@ class NotificationService {
     );
   }
 
+  /// Show a planned expense reminder notification.
+  ///
+  /// Notifies when a planned expense is due (today or overdue).
+  Future<void> showPlannedExpenseReminder({
+    required String description,
+    required int amountFcfa,
+    required int daysUntilDue,
+  }) async {
+    await _ensureInitialized();
+
+    final formattedAmount = _formatFcfa(amountFcfa);
+    final String message;
+    if (daysUntilDue < 0) {
+      message = "$description - $formattedAmount FCFA (en retard)";
+    } else if (daysUntilDue == 0) {
+      message = "$description - $formattedAmount FCFA aujourd'hui";
+    } else if (daysUntilDue == 1) {
+      message = '$description - $formattedAmount FCFA demain';
+    } else {
+      message = '$description - $formattedAmount FCFA dans $daysUntilDue jours';
+    }
+
+    final details = daysUntilDue <= 0 ? _getCriticalDetails() : _getWarningDetails();
+
+    await _plugin.show(
+      NotificationIds.plannedExpense + description.hashCode,
+      'Dépense programmée',
+      message,
+      details,
+      payload: 'planned_expense_reminder',
+    );
+  }
+
+  /// Show a grouped planned expense reminder for multiple expenses.
+  Future<void> showGroupedPlannedExpenseReminder({
+    required int count,
+    required int totalAmountFcfa,
+  }) async {
+    await _ensureInitialized();
+
+    final formattedAmount = _formatFcfa(totalAmountFcfa);
+
+    await _plugin.show(
+      NotificationIds.plannedExpenseGroup,
+      '$count dépenses programmées',
+      'Total $formattedAmount FCFA',
+      _getWarningDetails(),
+      payload: 'planned_expense_group',
+    );
+  }
+
   /// Show a generic notification (used for queued notifications).
   ///
   /// Covers: FR40, Story 4.8
@@ -327,6 +378,8 @@ abstract class NotificationIds {
   static const subscriptionGroup = 200;
   static const streakCelebration = 300;
   static const generic = 400; // Base ID for generic/queued notifications
+  static const plannedExpense = 500; // Base ID for planned expense reminders
+  static const plannedExpenseGroup = 600;
 }
 
 /// Provider for the NotificationService.

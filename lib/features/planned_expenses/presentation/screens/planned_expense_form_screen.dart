@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -6,8 +7,6 @@ import '../../../../core/services/clock_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/budget_colors.dart';
-import '../../../../shared/utils/fcfa_formatter.dart';
-import '../../../transactions/presentation/widgets/numeric_keypad.dart';
 import '../../domain/models/planned_expense_model.dart';
 import '../providers/planned_expense_form_provider.dart';
 
@@ -35,6 +34,7 @@ class PlannedExpenseFormScreen extends ConsumerStatefulWidget {
 class _PlannedExpenseFormScreenState
     extends ConsumerState<PlannedExpenseFormScreen> {
   final _descriptionController = TextEditingController();
+  final _amountController = TextEditingController();
   final _descriptionFocusNode = FocusNode();
 
   @override
@@ -47,6 +47,9 @@ class _PlannedExpenseFormScreenState
       if (widget.expense != null) {
         notifier.initForEdit(widget.expense!);
         _descriptionController.text = widget.expense!.description;
+        if (widget.expense!.amountFcfa > 0) {
+          _amountController.text = widget.expense!.amountFcfa.toString();
+        }
       } else {
         // Default to tomorrow's date for new planned expenses
         final clock = ref.read(clockProvider);
@@ -59,6 +62,7 @@ class _PlannedExpenseFormScreenState
   @override
   void dispose() {
     _descriptionController.dispose();
+    _amountController.dispose();
     _descriptionFocusNode.dispose();
     super.dispose();
   }
@@ -92,9 +96,36 @@ class _PlannedExpenseFormScreenState
                   ),
                   const SizedBox(height: AppSpacing.lg),
 
-                  // Amount display
-                  _AmountDisplay(amount: formState.amountFcfa),
-                  const SizedBox(height: AppSpacing.md),
+                  // Amount input with system keyboard
+                  TextField(
+                    controller: _amountController,
+                    keyboardType: TextInputType.number,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: 'Montant',
+                      hintText: '0',
+                      suffixText: 'FCFA',
+                      border: const OutlineInputBorder(),
+                      errorText: formState.amountFcfa == 0 &&
+                              formState.errorMessage != null
+                          ? 'Montant requis'
+                          : null,
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
+                    onChanged: (value) {
+                      final amount = int.tryParse(value) ?? 0;
+                      ref
+                          .read(plannedExpenseFormProvider.notifier)
+                          .setAmount(amount);
+                    },
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
 
                   // Expected date picker
                   _DatePicker(
@@ -130,54 +161,27 @@ class _PlannedExpenseFormScreenState
             ),
           ),
 
-          // Numeric keypad and submit button
-          Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 8,
-                  offset: const Offset(0, -2),
+          // Submit button
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: formState.isValid && !formState.isSaving
+                      ? _onSubmit
+                      : null,
+                  child: formState.isSaving
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.onPrimary,
+                          ),
+                        )
+                      : Text(isEditing ? 'Modifier' : 'Ajouter'),
                 ),
-              ],
-            ),
-            child: SafeArea(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  NumericKeypad(
-                    onDigitPressed: (digit) {
-                      ref
-                          .read(plannedExpenseFormProvider.notifier)
-                          .appendDigit(int.parse(digit));
-                    },
-                    onBackspacePressed: ref
-                        .read(plannedExpenseFormProvider.notifier)
-                        .deleteDigit,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: FilledButton(
-                        onPressed: formState.isValid && !formState.isSaving
-                            ? _onSubmit
-                            : null,
-                        child: formState.isSaving
-                            ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: AppColors.onPrimary,
-                                ),
-                              )
-                            : Text(isEditing ? 'Modifier' : 'Ajouter'),
-                      ),
-                    ),
-                  ),
-                ],
               ),
             ),
           ),
@@ -226,46 +230,6 @@ class _DescriptionField extends StatelessWidget {
       ),
       textCapitalization: TextCapitalization.sentences,
       maxLength: 200,
-    );
-  }
-}
-
-/// Display for the amount with FCFA formatting.
-class _AmountDisplay extends StatelessWidget {
-  const _AmountDisplay({required this.amount});
-
-  final int amount;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.lg,
-        vertical: AppSpacing.md,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        children: [
-          const Text(
-            'Montant',
-            style: TextStyle(
-              color: AppColors.onSurfaceVariant,
-              fontSize: 14,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            FcfaFormatter.format(amount),
-            style: const TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
