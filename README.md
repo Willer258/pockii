@@ -32,10 +32,26 @@
 - **Notifications de rappel** - Ne rate jamais une échéance
 - **Projection du budget** - Visualise ton solde après engagements
 
+### Règle 50/30/20 & Épargne
+- **Répartition budgétaire intelligente** - Applique automatiquement la règle 50/30/20
+  - 🏠 **Besoins (50%)** - Loyer, transport, alimentation de base
+  - 🎉 **Envies (30%)** - Loisirs, restaurants, shopping
+  - 💰 **Épargne (20%)** - Économies et investissements
+- **Classification automatique** - Chaque dépense est mappée à sa catégorie budget
+- **Feedback en temps réel** - Vois l'impact de chaque dépense sur ton budget avant de valider
+- **Alertes de dépassement** - Notification visuelle quand tu dépasses une catégorie
+
+### Fonds d'Urgence
+- **Objectif 6 mois de salaire** - Configure ton objectif d'épargne de sécurité
+- **Progression visuelle** - Barre de progression motivante
+- **Auto-incrémentation** - Les dépenses "Épargne" s'ajoutent automatiquement au fonds
+- **Messages motivants** - Conseils personnalisés selon ta progression
+
 ### Gamification
 - **Système de streaks** - Maintiens ta série de jours de suivi
 - **Célébrations** - Récompenses pour ta régularité (7, 14, 30, 60, 90 jours...)
 - **Badges de progression** - Motive-toi avec des objectifs visuels
+- **Statut budget 50/30/20** - Bonus visuel si tu respectes ta répartition
 
 ### Notifications Intelligentes
 - **Alertes budget** - Avertissement à 30% et 10% du budget restant
@@ -80,15 +96,20 @@ lib/
 │
 ├── features/                # Fonctionnalités par domaine
 │   ├── budget/              # Gestion des périodes budgétaires
+│   ├── budget_rules/        # Règle 50/30/20 & Fonds d'urgence
+│   │   ├── domain/          # Modèles (BudgetAllocation, EmergencyFund)
+│   │   ├── data/            # Repository SharedPreferences
+│   │   └── presentation/    # Widgets (BudgetAllocationCard, EmergencyFundCard)
 │   ├── history/             # Historique des transactions
 │   ├── home/                # Écran d'accueil + BudgetHeroCard
 │   ├── onboarding/          # Parcours d'inscription
 │   ├── planned_expenses/    # Dépenses prévues
 │   ├── settings/            # Paramètres
 │   ├── shell/               # Navigation principale
-│   ├── streaks/             # Système de streaks
+│   ├── streaks/             # Système de streaks + intégration 50/30/20
 │   ├── subscriptions/       # Gestion des abonnements
-│   └── transactions/        # Ajout/édition de transactions
+│   ├── tips/                # Conseils financiers contextuels
+│   └── transactions/        # Ajout/édition de transactions + feedback budget
 │
 └── shared/                  # Widgets et utilitaires partagés
     ├── utils/               # Formatters (FCFA, dates)
@@ -158,11 +179,20 @@ flutter test
 
 ## Roadmap
 
+### Terminé
+- [x] Règle budgétaire 50/30/20 avec suivi automatique
+- [x] Fonds d'urgence (objectif 6 mois de salaire)
+- [x] Classification intelligente des dépenses
+- [x] Feedback en temps réel lors de la saisie
+- [x] Intégration streaks + respect du budget
+- [x] Analyse des patterns de dépenses
+
+### À venir
 - [ ] Mode sombre
 - [ ] Export des données (CSV/PDF)
 - [ ] Synchronisation cloud (optionnelle)
-- [ ] Analyse des patterns de dépenses
 - [ ] Multi-devises
+- [ ] Tutoriels interactifs
 
 ---
 

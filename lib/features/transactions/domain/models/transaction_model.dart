@@ -1,6 +1,7 @@
 import 'package:pockii/core/database/app_database.dart';
 import 'package:drift/drift.dart';
 
+import '../../../budget_rules/domain/enums/expense_category.dart';
 import 'transaction_type.dart';
 
 /// Domain model representing a financial transaction.
@@ -53,6 +54,20 @@ class TransactionModel {
 
   /// Timestamp when this record was created.
   final DateTime createdAt;
+
+  /// Returns the budget category (Besoins/Envies/Épargne) for 50/30/20 rule.
+  ///
+  /// Uses intelligent mapping based on transaction category and note.
+  /// Only applies to expense transactions.
+  ExpenseCategory get budgetCategory {
+    if (type == TransactionType.income) {
+      // Income doesn't count towards spending categories
+      return ExpenseCategory.savings;
+    }
+    // Use category first, then note for more context
+    final textToAnalyze = '$category ${note ?? ''}'.toLowerCase();
+    return DefaultCategoryMappings.guessCategory(textToAnalyze);
+  }
 
   /// Converts this model to a drift TransactionsCompanion for insertion.
   ///

@@ -62,7 +62,7 @@ class _PatternsLockedScreenState extends ConsumerState<PatternsLockedScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tes Patterns'),
+        title: const Text('Tes Tendances'),
         centerTitle: true,
       ),
       body: unlockedAsync.when(
@@ -139,7 +139,7 @@ class _LockedState extends StatelessWidget {
 
           // Title
           Text(
-            'Patterns verrouilles',
+            'Tendances verrouillées',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -151,8 +151,8 @@ class _LockedState extends StatelessWidget {
           // Days remaining
           Text(
             daysRemaining == 1
-                ? 'Encore 1 jour avant de debloquer'
-                : 'Encore $daysRemaining jours avant de debloquer',
+                ? 'Encore 1 jour avant de débloquer'
+                : 'Encore $daysRemaining jours avant de débloquer',
             style: TextStyle(
               fontSize: 16,
               color: AppColors.onSurfaceVariant,
@@ -164,7 +164,7 @@ class _LockedState extends StatelessWidget {
 
           // Progress text
           Text(
-            '${(progress * 100).toInt()}% complete',
+            '${(progress * 100).toInt()}% complété',
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
@@ -198,7 +198,7 @@ class _LockedState extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  'On a besoin de suffisamment de donnees pour te montrer des insights vraiment utiles sur tes habitudes.',
+                  'On a besoin de suffisamment de données pour te montrer des analyses vraiment utiles sur tes habitudes.',
                   style: TextStyle(
                     fontSize: 13,
                     color: AppColors.onSurfaceVariant,
@@ -264,7 +264,7 @@ class _UnlockCelebration extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    'Tes patterns sont prets!',
+                    'Tes tendances sont prêtes !',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: AppColors.primary,
@@ -273,7 +273,7 @@ class _UnlockCelebration extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
-                    'Decouvre tes habitudes de depenses',
+                    'Découvre tes habitudes de dépenses',
                     style: TextStyle(
                       fontSize: 16,
                       color: AppColors.onSurfaceVariant,
@@ -311,7 +311,7 @@ class _PatternsContent extends ConsumerWidget {
           children: [
             // Section title
             Text(
-              'Repartition par categorie',
+              'Répartition par catégorie',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),

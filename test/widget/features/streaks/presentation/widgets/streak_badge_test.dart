@@ -2,6 +2,7 @@ import 'package:pockii/core/database/app_database.dart';
 import 'package:pockii/core/database/daos/streaks_dao.dart';
 import 'package:pockii/core/database/database_provider.dart';
 import 'package:pockii/core/services/clock_service.dart';
+import 'package:pockii/features/budget_rules/presentation/providers/budget_rules_provider.dart';
 import 'package:pockii/features/streaks/data/repositories/streak_repository.dart';
 import 'package:pockii/features/streaks/domain/services/streak_service.dart';
 import 'package:pockii/features/streaks/presentation/widgets/streak_badge.dart';
@@ -41,6 +42,8 @@ void main() {
         streaksDaoProvider.overrideWithValue(streaksDao),
         streakRepositoryProvider.overrideWithValue(streakRepository),
         streakServiceProvider.overrideWithValue(streakService),
+        // Budget providers for StreakDetailsDialog - disabled for tests
+        budgetAllocationProvider.overrideWith((ref) => null),
       ],
       child: const MaterialApp(
         home: Scaffold(

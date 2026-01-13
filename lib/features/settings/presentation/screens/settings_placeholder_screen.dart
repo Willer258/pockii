@@ -14,7 +14,7 @@ class SettingsPlaceholderScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Parametres'),
+        title: const Text('Paramètres'),
         centerTitle: true,
       ),
       body: Center(
@@ -36,14 +36,14 @@ class SettingsPlaceholderScreen extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(
-              'Bientot disponible',
+              'Bientôt disponible',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: AppColors.onSurfaceVariant,
                   ),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'Les parametres arrivent dans une prochaine version',
+              'Les paramètres arrivent dans une prochaine version',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: AppColors.onSurfaceVariant,
                   ),

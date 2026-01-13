@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/finances/presentation/screens/finances_screen.dart';
 import '../../features/history/presentation/screens/history_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/onboarding/presentation/providers/onboarding_provider.dart';
@@ -11,10 +12,17 @@ import '../../features/planned_expenses/presentation/screens/planned_expenses_li
 import '../../features/settings/presentation/screens/notification_preferences_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../../features/shell/presentation/screens/main_shell.dart';
+import '../../features/savings_projects/presentation/screens/create_project_screen.dart';
+import '../../features/savings_projects/presentation/screens/project_detail_screen.dart';
+import '../../features/savings_projects/presentation/screens/projects_list_screen.dart';
+import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/subscriptions/presentation/screens/subscriptions_list_screen.dart';
 
 /// Route paths as constants for type-safety.
 abstract class AppRoutes {
+  /// Splash screen route (initial)
+  static const String splash = '/splash';
+
   /// Home screen route
   static const String home = '/';
 
@@ -23,6 +31,9 @@ abstract class AppRoutes {
 
   /// History screen route
   static const String history = '/history';
+
+  /// Finances screen route
+  static const String finances = '/finances';
 
   /// Settings screen route
   static const String settings = '/settings';
@@ -38,6 +49,15 @@ abstract class AppRoutes {
 
   /// Notification preferences screen route
   static const String notificationPreferences = '/settings/notifications';
+
+  /// Savings projects list screen route
+  static const String projects = '/projects';
+
+  /// Create project screen route
+  static const String createProject = '/projects/create';
+
+  /// Project detail screen route (with id parameter)
+  static const String projectDetail = '/projects/:id';
 }
 
 /// Provider for tracking if onboarding check is complete.
@@ -55,10 +75,16 @@ final _onboardingCompletedCacheProvider = StateProvider<bool?>((ref) => null);
 /// Uses ShellRoute for persistent bottom navigation across main screens.
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: AppRoutes.home,
+    initialLocation: AppRoutes.splash,
     debugLogDiagnostics: true,
     redirect: (context, state) async {
+      final isSplashRoute = state.matchedLocation == AppRoutes.splash;
       final isOnboardingRoute = state.matchedLocation == AppRoutes.onboarding;
+
+      // Don't redirect from splash - it handles its own navigation
+      if (isSplashRoute) {
+        return null;
+      }
 
       // Check cached value first
       var onboardingCompleted = ref.read(_onboardingCompletedCacheProvider);
@@ -98,6 +124,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
+      // Splash screen route (initial - shows daily tip)
+      GoRoute(
+        path: AppRoutes.splash,
+        name: 'splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
       // Onboarding route (no shell - standalone screen)
       GoRoute(
         path: AppRoutes.onboarding,
@@ -114,6 +146,14 @@ final routerProvider = Provider<GoRouter>((ref) {
             pageBuilder: (context, state) => _buildTransitionPage(
               key: state.pageKey,
               child: const HomeScreen(),
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.finances,
+            name: 'finances',
+            pageBuilder: (context, state) => _buildTransitionPage(
+              key: state.pageKey,
+              child: const FinancesScreen(),
             ),
           ),
           GoRoute(
@@ -163,6 +203,47 @@ final routerProvider = Provider<GoRouter>((ref) {
               key: state.pageKey,
               child: const NotificationPreferencesScreen(),
             ),
+          ),
+          // Savings Projects routes
+          GoRoute(
+            path: AppRoutes.projects,
+            name: 'projects',
+            pageBuilder: (context, state) => _buildTransitionPage(
+              key: state.pageKey,
+              child: const ProjectsListScreen(),
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.createProject,
+            name: 'create-project',
+            pageBuilder: (context, state) => _buildTransitionPage(
+              key: state.pageKey,
+              child: const CreateProjectScreen(),
+            ),
+          ),
+          GoRoute(
+            path: '/projects/:id',
+            name: 'project-detail',
+            pageBuilder: (context, state) {
+              final id = int.parse(state.pathParameters['id']!);
+              return _buildTransitionPage(
+                key: state.pageKey,
+                child: ProjectDetailScreen(projectId: id),
+              );
+            },
+            routes: [
+              GoRoute(
+                path: 'edit',
+                name: 'project-edit',
+                pageBuilder: (context, state) {
+                  // Edit mode will be handled by fetching the project
+                  return _buildTransitionPage(
+                    key: state.pageKey,
+                    child: const CreateProjectScreen(),
+                  );
+                },
+              ),
+            ],
           ),
         ],
       ),

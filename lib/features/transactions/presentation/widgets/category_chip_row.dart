@@ -29,6 +29,7 @@ const List<ExpenseCategory> expenseCategories = [
   ExpenseCategory(id: 'leisure', label: 'Loisirs', icon: Icons.celebration),
   ExpenseCategory(id: 'family', label: 'Famille', icon: Icons.family_restroom),
   ExpenseCategory(id: 'subscriptions', label: 'Abonnements', icon: Icons.credit_card),
+  ExpenseCategory(id: 'savings', label: 'Épargne', icon: Icons.savings),
   ExpenseCategory(id: 'other', label: 'Autre', icon: Icons.inventory_2),
 ];
 

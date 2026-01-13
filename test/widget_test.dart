@@ -1,4 +1,4 @@
-// Basic smoke test for AccountApp
+// Basic smoke test for PockiiApp
 //
 // This test verifies that the app can be instantiated without errors.
 
@@ -12,7 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('AccountApp smoke test', (WidgetTester tester) async {
+  testWidgets('PockiiApp smoke test', (WidgetTester tester) async {
     // Create in-memory database for testing
     final db = AppDatabase.inMemory();
     final testClock = TestClock(DateTime(2026, 1, 15));
@@ -27,7 +27,7 @@ void main() {
           budgetPeriodsDaoProvider.overrideWith((ref) => BudgetPeriodsDao(db)),
           clockProvider.overrideWithValue(testClock),
         ],
-        child: const AccountApp(),
+        child: const PockiiApp(),
       ),
     );
 
@@ -35,7 +35,7 @@ void main() {
     await tester.pumpAndSettle(const Duration(seconds: 1));
 
     // App should have rendered something
-    expect(find.byType(AccountApp), findsOneWidget);
+    expect(find.byType(PockiiApp), findsOneWidget);
 
     // Clean up
     await db.close();

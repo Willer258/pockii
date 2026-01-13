@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/services/streak_celebration_tracker.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../budget_rules/domain/models/budget_allocation.dart';
+import '../../../budget_rules/presentation/providers/budget_rules_provider.dart';
 import '../../domain/services/streak_service.dart';
 import '../providers/streak_provider.dart';
 
@@ -239,7 +241,7 @@ class _StreakBadgePlaceholder extends StatelessWidget {
 }
 
 /// Dialog showing streak details.
-class StreakDetailsDialog extends StatelessWidget {
+class StreakDetailsDialog extends ConsumerWidget {
   const StreakDetailsDialog({
     required this.status,
     super.key,
@@ -248,7 +250,14 @@ class StreakDetailsDialog extends StatelessWidget {
   final StreakStatus status;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final allocation = ref.watch(budgetAllocationProvider);
+    final budgetRuleSettings = ref.watch(budgetRuleSettingsProvider);
+
+    // Determine budget health
+    final bool isBudgetHealthy = allocation != null && !allocation.hasOverspending;
+    final bool showBudgetStatus = budgetRuleSettings.isEnabled && allocation != null;
+
     return AlertDialog(
       title: const Row(
         children: [
@@ -271,6 +280,18 @@ class StreakDetailsDialog extends StatelessWidget {
             value: _formatDays(status.longestStreak),
             isHighlighted: false,
           ),
+
+          // Budget health indicator (50/30/20)
+          if (showBudgetStatus) ...[
+            const SizedBox(height: AppSpacing.lg),
+            const Divider(),
+            const SizedBox(height: AppSpacing.md),
+            _BudgetHealthRow(
+              isHealthy: isBudgetHealthy,
+              allocation: allocation,
+            ),
+          ],
+
           const SizedBox(height: AppSpacing.lg),
           if (status.currentStreak == 0)
             const _InfoCard(
@@ -285,10 +306,12 @@ class StreakDetailsDialog extends StatelessWidget {
               color: Color(0xFFFF9800),
             )
           else if (status.hasActivityToday)
-            const _InfoCard(
-              icon: Icons.check_circle_outline,
-              message: 'Super! Tu as déjà logé une transaction aujourd\'hui. Reviens demain!',
-              color: AppColors.success,
+            _InfoCard(
+              icon: isBudgetHealthy ? Icons.star : Icons.check_circle_outline,
+              message: isBudgetHealthy
+                  ? 'Excellent! Tu respectes ton budget 50/30/20. Continue comme ça!'
+                  : 'Super! Tu as déjà logé une transaction aujourd\'hui. Reviens demain!',
+              color: isBudgetHealthy ? const Color(0xFFFFD700) : AppColors.success,
             ),
         ],
       ),
@@ -383,6 +406,121 @@ class _InfoCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Row showing budget health status (50/30/20 compliance).
+class _BudgetHealthRow extends StatelessWidget {
+  const _BudgetHealthRow({
+    required this.isHealthy,
+    required this.allocation,
+  });
+
+  final bool isHealthy;
+  final BudgetAllocation? allocation;
+
+  @override
+  Widget build(BuildContext context) {
+    if (allocation == null) return const SizedBox.shrink();
+
+    final needsProgress = (allocation!.needs.progress * 100).clamp(0, 200).toInt();
+    final wantsProgress = (allocation!.wants.progress * 100).clamp(0, 200).toInt();
+    final savingsProgress = (allocation!.savings.progress * 100).clamp(0, 200).toInt();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(
+              isHealthy ? '✨' : '⚠️',
+              style: const TextStyle(fontSize: 18),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Text(
+              'Respect 50/30/20',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: isHealthy ? AppColors.success : AppColors.error,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        // Mini progress bars for each category
+        Row(
+          children: [
+            Expanded(
+              child: _MiniProgressBar(
+                label: '🏠',
+                progress: needsProgress,
+                isOver: needsProgress > 100,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: _MiniProgressBar(
+                label: '🎉',
+                progress: wantsProgress,
+                isOver: wantsProgress > 100,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: _MiniProgressBar(
+                label: '💰',
+                progress: savingsProgress,
+                isOver: false, // Savings over is good!
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// Mini progress bar for budget category.
+class _MiniProgressBar extends StatelessWidget {
+  const _MiniProgressBar({
+    required this.label,
+    required this.progress,
+    required this.isOver,
+  });
+
+  final String label;
+  final int progress;
+  final bool isOver;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(label, style: const TextStyle(fontSize: 14)),
+        const SizedBox(height: 2),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: LinearProgressIndicator(
+            value: (progress / 100).clamp(0.0, 1.0),
+            backgroundColor: AppColors.outlineVariant.withValues(alpha: 0.3),
+            valueColor: AlwaysStoppedAnimation<Color>(
+              isOver ? AppColors.error : AppColors.success,
+            ),
+            minHeight: 4,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          '$progress%',
+          style: TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w500,
+            color: isOver ? AppColors.error : AppColors.onSurfaceVariant,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -95,3 +95,14 @@ development_status:
   5-5-income-vs-expenses-overview: done
   5-6-day-of-week-spending-distribution: done
   epic-5-retrospective: optional
+
+  # Epic 6: Budget Rules & Emergency Fund (50/30/20)
+  epic-6: done
+  6-1-budget-category-mapping: done           # TransactionModel.budgetCategory getter
+  6-2-category-spending-calculation: done     # categorySpendingProvider + real data
+  6-3-budget-allocation-card-display: done    # BudgetAllocationCard with progress bars
+  6-4-transaction-budget-feedback: done       # _BudgetCategoryFeedback widget in bottom sheet
+  6-5-savings-category-addition: done         # Added "Épargne" to expense categories
+  6-6-emergency-fund-integration: done        # Auto-add savings to emergency fund
+  6-7-streak-budget-health-indicator: done    # Budget health in StreakDetailsDialog
+  epic-6-retrospective: optional

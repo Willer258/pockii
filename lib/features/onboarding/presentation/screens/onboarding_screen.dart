@@ -116,17 +116,17 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   // Screen 1: Welcome
                   OnboardingPage(
                     icon: Icons.account_balance_wallet,
-                    title: 'Sais combien tu peux dépenser',
+                    title: 'Ton budget en un coup d\'oeil',
                     description:
-                        'Pockii te montre ton budget restant en temps réel. '
-                        'Finis les fins de mois difficiles !',
+                        'Pockii te montre combien tu peux encore dépenser. '
+                        'Fini les fins de mois difficiles !',
                   ),
                   // Screen 2: Features
                   OnboardingPage(
                     icon: Icons.insights,
-                    title: 'Comprends tes dépenses',
+                    title: 'Analyse tes dépenses',
                     description:
-                        'Suis tes transactions, découvre tes patterns de dépenses, '
+                        'Suis tes transactions, découvre tes habitudes de dépenses '
                         'et reçois des alertes pour rester dans ton budget.',
                   ),
                   // Screen 3: Budget setup

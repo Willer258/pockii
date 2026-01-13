@@ -34,7 +34,7 @@ class EmptyStateWidget extends StatelessWidget {
   factory EmptyStateWidget.home({VoidCallback? onAction}) {
     return EmptyStateWidget(
       icon: Icons.account_balance_wallet_outlined,
-      title: 'Commence à tracker tes dépenses',
+      title: 'Commence à suivre tes dépenses',
       subtitle: 'Ajoute ta première dépense pour voir ton budget évoluer',
       actionLabel: onAction != null ? 'Ajouter une dépense' : null,
       onAction: onAction,
@@ -65,7 +65,7 @@ class EmptyStateWidget extends StatelessWidget {
     final dayWord = daysRemaining == 1 ? 'jour' : 'jours';
     return EmptyStateWidget(
       icon: Icons.lock_outline,
-      title: 'Tes patterns arrivent bientôt',
+      title: 'Tes tendances arrivent bientôt',
       subtitle: 'Encore $daysRemaining $dayWord de données pour débloquer cette fonctionnalité',
     );
   }
@@ -75,7 +75,7 @@ class EmptyStateWidget extends StatelessWidget {
     return const EmptyStateWidget(
       icon: Icons.insights_outlined,
       title: 'Pas encore de données',
-      subtitle: 'Continue à tracker tes dépenses pour voir tes tendances',
+      subtitle: 'Continue à noter tes dépenses pour voir tes tendances',
     );
   }
 

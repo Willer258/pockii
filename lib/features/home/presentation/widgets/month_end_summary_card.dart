@@ -156,7 +156,7 @@ class MonthEndSummaryCard extends ConsumerWidget {
                   ),
                   const SizedBox(width: AppSpacing.xs),
                   Text(
-                    'Top categorie: ',
+                    'Top catégorie: ',
                     style: TextStyle(
                       fontSize: 12,
                       color: AppColors.onSurfaceVariant,

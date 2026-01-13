@@ -1,17 +1,19 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/router/app_router.dart';
+import '../../../../core/services/simulation_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/utils/fcfa_formatter.dart';
 import '../../../budget/data/repositories/budget_period_repository.dart';
+import '../../../budget_rules/presentation/providers/budget_rules_provider.dart';
+import '../../../budget_rules/presentation/widgets/budget_allocation_card.dart';
 import '../../../home/presentation/providers/budget_provider.dart';
 import '../../../home/presentation/widgets/budget_animation/budget_animation_widget.dart';
-import '../../../planned_expenses/presentation/providers/planned_expenses_list_provider.dart';
-import '../../../subscriptions/presentation/providers/subscriptions_list_provider.dart'
-    show activeSubscriptionsProvider, totalMonthlyAmountProvider;
+import '../../../tutorials/presentation/widgets/tutorial_bottom_sheet.dart';
+import '../../../tutorials/tutorial_content.dart';
 import '../dialogs/budget_edit_dialog.dart';
 
 /// Settings screen for budget configuration and navigation.
@@ -44,12 +46,8 @@ class SettingsScreen extends ConsumerWidget {
           _AppearanceSection(),
           const SizedBox(height: AppSpacing.lg),
 
-          // Subscriptions Section
-          _SubscriptionsSection(),
-          const SizedBox(height: AppSpacing.lg),
-
-          // Planned Expenses Section
-          _PlannedExpensesSection(),
+          // Budget Rules Section (50/30/20)
+          _BudgetRulesSection(),
           const SizedBox(height: AppSpacing.lg),
 
           // Notifications Section
@@ -137,80 +135,6 @@ class _AppearanceSection extends StatelessWidget {
   }
 }
 
-/// Subscriptions section showing count and total with navigation.
-class _SubscriptionsSection extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final subscriptionsAsync = ref.watch(activeSubscriptionsProvider);
-    final totalAsync = ref.watch(totalMonthlyAmountProvider);
-
-    return _SettingsSection(
-      title: 'Abonnements',
-      icon: Icons.repeat_outlined,
-      child: subscriptionsAsync.when(
-        data: (subscriptions) {
-          final count = subscriptions.length;
-          final total = totalAsync.maybeWhen(
-            data: (int t) => t,
-            orElse: () => 0,
-          );
-          return _SettingsTile(
-            title: '$count abonnement${count != 1 ? 's' : ''}',
-            subtitle: 'Total mensuel: ${FcfaFormatter.format(total)}',
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push('/subscriptions'),
-          );
-        },
-        loading: () => const _SettingsTile(
-          title: 'Chargement...',
-          subtitle: 'Total mensuel: --',
-        ),
-        error: (_, __) => const _SettingsTile(
-          title: 'Erreur',
-          subtitle: 'Impossible de charger',
-        ),
-      ),
-    );
-  }
-}
-
-/// Planned expenses section showing pending count with navigation.
-class _PlannedExpensesSection extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final expensesAsync = ref.watch(pendingPlannedExpensesProvider);
-    final totalAsync = ref.watch(totalPendingAmountProvider);
-
-    return _SettingsSection(
-      title: 'Dépenses prévues',
-      icon: Icons.event_note_outlined,
-      child: expensesAsync.when(
-        data: (expenses) {
-          final count = expenses.length;
-          final total = totalAsync.maybeWhen(
-            data: (int t) => t,
-            orElse: () => 0,
-          );
-          return _SettingsTile(
-            title: '$count dépense${count != 1 ? 's' : ''} en attente',
-            subtitle: 'Total: ${FcfaFormatter.format(total)}',
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push('/planned-expenses'),
-          );
-        },
-        loading: () => const _SettingsTile(
-          title: 'Chargement...',
-          subtitle: 'Total: --',
-        ),
-        error: (_, __) => const _SettingsTile(
-          title: 'Erreur',
-          subtitle: 'Impossible de charger',
-        ),
-      ),
-    );
-  }
-}
-
 /// Notifications section with link to preferences.
 class _NotificationsSection extends StatelessWidget {
   @override
@@ -228,27 +152,107 @@ class _NotificationsSection extends StatelessWidget {
   }
 }
 
-/// About section with app information.
-class _AboutSection extends StatelessWidget {
+/// About section with app information and simulation button.
+class _AboutSection extends ConsumerStatefulWidget {
+  @override
+  ConsumerState<_AboutSection> createState() => _AboutSectionState();
+}
+
+class _AboutSectionState extends ConsumerState<_AboutSection> {
+  bool _isSimulating = false;
+
   @override
   Widget build(BuildContext context) {
-    return const _SettingsSection(
+    return _SettingsSection(
       title: 'À propos',
       icon: Icons.info_outline,
       child: Column(
         children: [
-          _SettingsTile(
+          const _SettingsTile(
             title: 'Pockii',
             subtitle: 'Version 1.0.0',
           ),
-          Divider(height: 1),
-          _SettingsTile(
+          const Divider(height: 1),
+          const _SettingsTile(
             title: 'Ton budget, simplifié',
             subtitle: 'Gestion de budget simple et efficace',
+          ),
+          // Simulation only in debug mode
+          if (kDebugMode) ...[
+            const Divider(height: 1),
+            _SettingsTile(
+              title: 'Simulation 3 mois',
+              subtitle: 'Générer des données de démonstration',
+              trailing: _isSimulating
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.science_outlined),
+              onTap: _isSimulating ? null : _runSimulation,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Future<void> _runSimulation() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Simulation'),
+        content: const Text(
+          'Cette action va supprimer toutes les données existantes et les remplacer par des données de simulation sur 3 mois.\n\nContinuer?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Annuler'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Simuler'),
           ),
         ],
       ),
     );
+
+    if (confirmed != true) return;
+
+    setState(() {
+      _isSimulating = true;
+    });
+
+    try {
+      final service = ref.read(simulationServiceProvider);
+      await service.runSimulation();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Simulation terminée! Redémarrage recommandé.'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erreur: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSimulating = false;
+        });
+      }
+    }
   }
 }
 
@@ -258,11 +262,13 @@ class _SettingsSection extends StatelessWidget {
     required this.title,
     required this.icon,
     required this.child,
+    this.action,
   });
 
   final String title;
   final IconData icon;
   final Widget child;
+  final Widget? action;
 
   @override
   Widget build(BuildContext context) {
@@ -282,15 +288,18 @@ class _SettingsSection extends StatelessWidget {
                 color: AppColors.primary,
               ),
               const SizedBox(width: AppSpacing.xs),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primary,
-                  letterSpacing: 0.5,
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.primary,
+                    letterSpacing: 0.5,
+                  ),
                 ),
               ),
+              if (action != null) action!,
             ],
           ),
         ),
@@ -358,6 +367,54 @@ class _SettingsTile extends StatelessWidget {
             if (trailing != null) trailing!,
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Budget Rules section (50/30/20 rule).
+class _BudgetRulesSection extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(budgetRuleSettingsProvider);
+
+    return _SettingsSection(
+      title: 'Règle 50/30/20',
+      icon: Icons.pie_chart_outline,
+      action: TutorialHelpButton(tutorial: TutorialContent.rule503020, size: 18),
+      child: Column(
+        children: [
+          _SettingsTile(
+            title: settings.isEnabled ? 'Activée' : 'Désactivée',
+            subtitle: 'Répartir ton budget: Besoins, Envies, Épargne',
+            trailing: Switch(
+              value: settings.isEnabled,
+              onChanged: (_) {
+                ref.read(budgetRuleSettingsProvider.notifier).toggleEnabled();
+              },
+              activeColor: AppColors.primary,
+            ),
+          ),
+          if (settings.isEnabled) ...[
+            const Divider(height: 1),
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Column(
+                children: [
+                  const BudgetAllocationPreview(),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    '${settings.needsPercentage}% Besoins • ${settings.wantsPercentage}% Envies • ${settings.savingsPercentage}% Épargne',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: AppColors.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }

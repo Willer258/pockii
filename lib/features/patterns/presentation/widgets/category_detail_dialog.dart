@@ -66,24 +66,11 @@ class _DetailContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Handle bar
-        Center(
-          child: Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: AppColors.outlineVariant,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-        ),
-
-        const SizedBox(height: AppSpacing.lg),
-
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
         // Header with icon and name
         Row(
           children: [
@@ -153,7 +140,8 @@ class _DetailContent extends StatelessWidget {
         _TrendCard(detail: detail),
 
         const SizedBox(height: AppSpacing.lg),
-      ],
+        ],
+      ),
     );
   }
 

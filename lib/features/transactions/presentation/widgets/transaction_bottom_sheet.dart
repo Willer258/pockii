@@ -7,6 +7,9 @@ import '../../../../core/exceptions/app_exceptions.dart';
 import '../../../../core/services/clock_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../shared/utils/fcfa_formatter.dart';
+import '../../../budget_rules/domain/enums/expense_category.dart';
+import '../../../budget_rules/presentation/providers/budget_rules_provider.dart';
 import '../../../home/presentation/providers/budget_provider.dart';
 import '../../../streaks/domain/services/streak_service.dart';
 import '../../../streaks/presentation/providers/streak_provider.dart';
@@ -84,6 +87,7 @@ class _TransactionBottomSheetState
   final _amountController = TextEditingController();
   bool _isSubmitting = false;
   DateTime? _selectedDate;
+  bool _addToEmergencyFund = true; // Default to adding savings to emergency fund
 
   @override
   void initState() {
@@ -167,6 +171,15 @@ class _TransactionBottomSheetState
 
         // Invalidate streak provider to refresh UI
         ref.invalidate(streakStatusProvider);
+
+        // Add to emergency fund if savings category and checkbox is checked
+        if (category == 'savings' && _addToEmergencyFund) {
+          final emergencyFundSettings = ref.read(emergencyFundSettingsProvider);
+          if (emergencyFundSettings.isEnabled) {
+            await ref.read(emergencyFundSettingsProvider.notifier)
+                .addToSavings(formState.amountFcfa);
+          }
+        }
       }
 
       // Refresh budget to reflect changes (NFR2: <100ms)
@@ -385,6 +398,24 @@ class _TransactionBottomSheetState
                 isIncome: formState.isIncome,
               ),
 
+              // Budget category feedback (50/30/20)
+              if (!formState.isIncome && formState.category != null)
+                _BudgetCategoryFeedback(
+                  category: formState.category!,
+                  amount: formState.amountFcfa,
+                ),
+
+              // Emergency fund option for savings
+              if (formState.category == 'savings')
+                _EmergencyFundOption(
+                  isChecked: _addToEmergencyFund,
+                  onChanged: (value) {
+                    setState(() {
+                      _addToEmergencyFund = value ?? false;
+                    });
+                  },
+                ),
+
               const SizedBox(height: AppSpacing.md),
 
               // Note field
@@ -456,6 +487,206 @@ class _TransactionBottomSheetState
               const SizedBox(height: AppSpacing.lg),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Widget for adding savings to emergency fund.
+class _EmergencyFundOption extends ConsumerWidget {
+  const _EmergencyFundOption({
+    required this.isChecked,
+    required this.onChanged,
+  });
+
+  final bool isChecked;
+  final ValueChanged<bool?> onChanged;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(emergencyFundSettingsProvider);
+
+    // Only show if emergency fund is enabled
+    if (!settings.isEnabled || settings.monthlySalary == 0) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.xs,
+      ),
+      child: InkWell(
+        onTap: () => onChanged(!isChecked),
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.all(AppSpacing.sm),
+          decoration: BoxDecoration(
+            color: AppColors.success.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: AppColors.success.withValues(alpha: 0.3),
+              width: 1,
+            ),
+          ),
+          child: Row(
+            children: [
+              Checkbox(
+                value: isChecked,
+                onChanged: onChanged,
+                activeColor: AppColors.success,
+                visualDensity: VisualDensity.compact,
+              ),
+              const SizedBox(width: AppSpacing.xs),
+              const Text('🛡️', style: TextStyle(fontSize: 18)),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Ajouter au fonds d\'urgence',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      '${settings.monthsSaved.toStringAsFixed(1)}/${settings.targetMonths} mois épargnés',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: AppColors.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Widget showing which 50/30/20 category this expense belongs to.
+class _BudgetCategoryFeedback extends ConsumerWidget {
+  const _BudgetCategoryFeedback({
+    required this.category,
+    required this.amount,
+  });
+
+  final String category;
+  final int amount;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(budgetRuleSettingsProvider);
+
+    // Only show if 50/30/20 is enabled
+    if (!settings.isEnabled) {
+      return const SizedBox.shrink();
+    }
+
+    final allocation = ref.watch(budgetAllocationProvider);
+    if (allocation == null) {
+      return const SizedBox.shrink();
+    }
+
+    // Determine which budget category this transaction category belongs to
+    final budgetCategory = DefaultCategoryMappings.guessCategory(category);
+    final categoryAllocation = allocation.forCategory(budgetCategory);
+
+    // Calculate what happens if we add this amount
+    final currentSpent = categoryAllocation.actualAmount;
+    final newTotal = currentSpent + amount;
+    final target = categoryAllocation.targetAmount;
+    final willExceed = newTotal > target;
+    final remainingAfter = target - newTotal;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.all(AppSpacing.sm),
+        decoration: BoxDecoration(
+          color: willExceed
+              ? AppColors.error.withValues(alpha: 0.1)
+              : budgetCategory.color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: willExceed
+                ? AppColors.error.withValues(alpha: 0.3)
+                : budgetCategory.color.withValues(alpha: 0.3),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            // Category emoji
+            Text(
+              budgetCategory.emoji,
+              style: const TextStyle(fontSize: 20),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            // Info
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    budgetCategory.displayName,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: willExceed ? AppColors.error : budgetCategory.color,
+                    ),
+                  ),
+                  Text(
+                    willExceed
+                        ? 'Dépassera le budget de ${FcfaFormatter.formatCompact(-remainingAfter)}'
+                        : 'Reste après: ${FcfaFormatter.formatCompact(remainingAfter)}',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: willExceed
+                          ? AppColors.error
+                          : AppColors.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Progress indicator
+            SizedBox(
+              width: 40,
+              height: 40,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    value: (newTotal / target).clamp(0.0, 1.0),
+                    strokeWidth: 4,
+                    backgroundColor: AppColors.outlineVariant.withValues(alpha: 0.3),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      willExceed ? AppColors.error : budgetCategory.color,
+                    ),
+                  ),
+                  Text(
+                    '${((newTotal / target) * 100).clamp(0, 999).toInt()}%',
+                    style: TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w600,
+                      color: willExceed ? AppColors.error : budgetCategory.color,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

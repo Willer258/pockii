@@ -254,7 +254,7 @@ class _DayDetailPanel extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  'Top categorie: ',
+                  'Top catégorie: ',
                   style: TextStyle(
                     fontSize: 12,
                     color: AppColors.onSurfaceVariant,
@@ -343,7 +343,7 @@ class _NoDataState extends StatelessWidget {
               ),
               const SizedBox(width: AppSpacing.sm),
               Text(
-                'Depenses par jour',
+                'Dépenses par jour',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -358,7 +358,7 @@ class _NoDataState extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'Pas encore de donnees',
+            'Pas encore de données',
             style: TextStyle(
               fontWeight: FontWeight.w600,
               color: AppColors.onSurface,
@@ -367,7 +367,7 @@ class _NoDataState extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            'Ajoute des depenses pour voir la repartition par jour',
+            'Ajoute des dépenses pour voir la répartition par jour',
             style: TextStyle(
               fontSize: 13,
               color: AppColors.onSurfaceVariant,

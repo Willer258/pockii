@@ -369,7 +369,7 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
-              'Pas encore de depenses',
+              'Pas encore de dépenses',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: AppColors.onSurfaceVariant,
                   ),
@@ -377,7 +377,7 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'Ajoute des depenses pour voir la repartition par categorie',
+              'Ajoute des dépenses pour voir la répartition par catégorie',
               style: TextStyle(
                 fontSize: 14,
                 color: AppColors.onSurfaceVariant,

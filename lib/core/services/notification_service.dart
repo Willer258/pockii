@@ -380,6 +380,8 @@ abstract class NotificationIds {
   static const generic = 400; // Base ID for generic/queued notifications
   static const plannedExpense = 500; // Base ID for planned expense reminders
   static const plannedExpenseGroup = 600;
+  static const morningNotification = 700; // Daily morning tip + budget
+  static const spendingAnomaly = 800; // Unusual spending alerts
 }
 
 /// Provider for the NotificationService.

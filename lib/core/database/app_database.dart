@@ -11,6 +11,8 @@ import '../constants/app_constants.dart';
 import 'tables/app_settings_table.dart';
 import 'tables/budget_periods_table.dart';
 import 'tables/planned_expenses_table.dart';
+import 'tables/project_contributions_table.dart';
+import 'tables/savings_projects_table.dart';
 import 'tables/subscriptions_table.dart';
 import 'tables/transactions_table.dart';
 import 'tables/user_streaks_table.dart';
@@ -21,7 +23,7 @@ part 'app_database.g.dart';
 ///
 /// Uses drift for type-safe database access and SQLCipher for AES-256 encryption.
 /// All monetary values are stored as integers (FCFA).
-@DriftDatabase(tables: [BudgetPeriods, AppSettings, Transactions, Subscriptions, PlannedExpenses, UserStreaks])
+@DriftDatabase(tables: [BudgetPeriods, AppSettings, Transactions, Subscriptions, PlannedExpenses, UserStreaks, SavingsProjects, ProjectContributions])
 class AppDatabase extends _$AppDatabase {
   /// Creates an encrypted database instance.
   ///
@@ -36,7 +38,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.inMemory() : super(_openInMemoryConnection());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration {
@@ -60,6 +62,11 @@ class AppDatabase extends _$AppDatabase {
         // Migration from version 4 to 5: Add user_streaks table
         if (from < 5) {
           await m.createTable(userStreaks);
+        }
+        // Migration from version 5 to 6: Add savings projects tables
+        if (from < 6) {
+          await m.createTable(savingsProjects);
+          await m.createTable(projectContributions);
         }
       },
     );

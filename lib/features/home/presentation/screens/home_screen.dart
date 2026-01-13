@@ -4,8 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/services/month_summary_service.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/empty_state_widget.dart';
+import '../../../budget_rules/presentation/widgets/budget_allocation_mini_cards.dart';
+import '../../../budget_rules/presentation/widgets/emergency_fund_card.dart';
 import '../../../history/presentation/providers/history_provider.dart';
+import '../../../planned_expenses/presentation/widgets/upcoming_expense_preview.dart';
+import '../../../savings_projects/presentation/widgets/project_preview_card.dart';
 import '../../../streaks/presentation/widgets/streak_badge.dart';
+import '../../../tips/presentation/widgets/tip_card.dart';
 import '../widgets/budget_hero_card.dart';
 import '../widgets/month_end_summary_card.dart';
 import '../widgets/recent_transactions_section.dart';
@@ -48,9 +53,32 @@ class HomeScreen extends ConsumerWidget {
             children: [
               // Streak Badge - user engagement indicator
               const Center(child: StreakBadge()),
+
+              const SizedBox(height: AppSpacing.sm),
+
+              // Tip of the day (compact)
+              const TipCardCompact(),
+
               const SizedBox(height: AppSpacing.md),
+
               // Budget Hero Card - the main visual element
               const BudgetHeroCard(),
+
+              // 50/30/20 Mini Cards with circular gauges (if enabled)
+              const SizedBox(height: AppSpacing.md),
+              const BudgetAllocationMiniCards(),
+
+              // Emergency Fund Progress (if enabled)
+              const SizedBox(height: AppSpacing.sm),
+              const EmergencyFundCard(),
+
+              // Priority savings project preview (if any)
+              const SizedBox(height: AppSpacing.sm),
+              const ProjectPreviewCard(),
+
+              // Next planned expense preview (if any)
+              const SizedBox(height: AppSpacing.sm),
+              const UpcomingExpensePreview(),
 
               // Month-end summary card (FR55)
               showSummaryAsync.when(

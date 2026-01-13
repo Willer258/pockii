@@ -6,7 +6,7 @@ import '../../../../core/router/app_router.dart';
 
 /// Bottom navigation bar widget.
 ///
-/// Shows 4 navigation items: Home, History, Patterns, Settings.
+/// Shows 4 navigation items: Home, Finances, Patterns, Settings.
 /// Active item uses filled icon, inactive use outlined.
 class AppBottomNav extends ConsumerWidget {
   const AppBottomNav({super.key});
@@ -27,26 +27,26 @@ class AppBottomNav extends ConsumerWidget {
           label: 'Accueil',
         ),
         NavigationDestination(
-          icon: Icon(Icons.receipt_long_outlined),
-          selectedIcon: Icon(Icons.receipt_long),
-          label: 'Historique',
+          icon: Icon(Icons.account_balance_wallet_outlined),
+          selectedIcon: Icon(Icons.account_balance_wallet),
+          label: 'Finances',
         ),
         NavigationDestination(
           icon: Icon(Icons.analytics_outlined),
           selectedIcon: Icon(Icons.analytics),
-          label: 'Patterns',
+          label: 'Tendances',
         ),
         NavigationDestination(
           icon: Icon(Icons.settings_outlined),
           selectedIcon: Icon(Icons.settings),
-          label: 'Parametres',
+          label: 'Paramètres',
         ),
       ],
     );
   }
 
   int _getIndexFromLocation(String location) {
-    if (location.startsWith(AppRoutes.history)) return 1;
+    if (location.startsWith(AppRoutes.finances)) return 1;
     if (location.startsWith(AppRoutes.patterns)) return 2;
     if (location.startsWith(AppRoutes.settings)) return 3;
     return 0; // Default to home
@@ -57,7 +57,7 @@ class AppBottomNav extends ConsumerWidget {
       case 0:
         context.go(AppRoutes.home);
       case 1:
-        context.go(AppRoutes.history);
+        context.go(AppRoutes.finances);
       case 2:
         context.go(AppRoutes.patterns);
       case 3:
