@@ -2,7 +2,7 @@
 ///
 /// Import this file to access all theme components:
 /// ```dart
-/// import 'package:accountapp/core/theme/theme.dart';
+/// import 'package:pockii/core/theme/theme.dart';
 /// ```
 ///
 /// Provides:

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:drift/drift.dart' hide isNull, isNotNull;
-import 'package:accountapp/core/database/app_database.dart';
-import 'package:accountapp/core/database/daos/budget_periods_dao.dart';
+import 'package:pockii/core/database/app_database.dart';
+import 'package:pockii/core/database/daos/budget_periods_dao.dart';
 
 void main() {
   late AppDatabase db;

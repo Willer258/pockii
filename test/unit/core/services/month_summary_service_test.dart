@@ -1,9 +1,9 @@
-import 'package:accountapp/core/database/daos/app_settings_dao.dart';
-import 'package:accountapp/core/database/daos/budget_periods_dao.dart';
-import 'package:accountapp/core/database/daos/subscriptions_dao.dart';
-import 'package:accountapp/core/database/daos/transactions_dao.dart';
-import 'package:accountapp/core/services/clock_service.dart';
-import 'package:accountapp/core/services/month_summary_service.dart';
+import 'package:pockii/core/database/daos/app_settings_dao.dart';
+import 'package:pockii/core/database/daos/budget_periods_dao.dart';
+import 'package:pockii/core/database/daos/subscriptions_dao.dart';
+import 'package:pockii/core/database/daos/transactions_dao.dart';
+import 'package:pockii/core/services/clock_service.dart';
+import 'package:pockii/core/services/month_summary_service.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';

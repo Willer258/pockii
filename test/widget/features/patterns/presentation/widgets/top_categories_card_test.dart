@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:accountapp/core/services/pattern_analysis_service.dart';
-import 'package:accountapp/features/patterns/presentation/widgets/top_categories_card.dart';
+import 'package:pockii/core/services/pattern_analysis_service.dart';
+import 'package:pockii/features/patterns/presentation/widgets/top_categories_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';

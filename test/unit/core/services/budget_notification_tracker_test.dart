@@ -1,5 +1,5 @@
-import 'package:accountapp/core/services/budget_notification_tracker.dart';
-import 'package:accountapp/core/database/daos/app_settings_dao.dart';
+import 'package:pockii/core/services/budget_notification_tracker.dart';
+import 'package:pockii/core/database/daos/app_settings_dao.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

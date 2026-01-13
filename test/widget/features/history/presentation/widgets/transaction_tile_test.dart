@@ -1,7 +1,7 @@
-import 'package:accountapp/core/theme/app_colors.dart';
-import 'package:accountapp/features/history/presentation/widgets/transaction_tile.dart';
-import 'package:accountapp/features/transactions/domain/models/transaction_model.dart';
-import 'package:accountapp/features/transactions/domain/models/transaction_type.dart';
+import 'package:pockii/core/theme/app_colors.dart';
+import 'package:pockii/features/history/presentation/widgets/transaction_tile.dart';
+import 'package:pockii/features/transactions/domain/models/transaction_model.dart';
+import 'package:pockii/features/transactions/domain/models/transaction_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

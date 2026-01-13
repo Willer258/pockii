@@ -1,4 +1,4 @@
-package com.accountapp.accountapp
+package com.pockii.app
 
 import io.flutter.embedding.android.FlutterActivity
 

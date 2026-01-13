@@ -1,4 +1,4 @@
-import 'package:accountapp/core/database/app_database.dart';
+import 'package:pockii/core/database/app_database.dart';
 import 'package:drift/drift.dart';
 
 import 'subscription_frequency.dart';

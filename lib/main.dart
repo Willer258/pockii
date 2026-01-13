@@ -32,14 +32,14 @@ void main() async {
 
   runApp(
     const ProviderScope(
-      child: AccountApp(),
+      child: PockiiApp(),
     ),
   );
 }
 
-/// Root widget for the AccountApp application.
-class AccountApp extends ConsumerWidget {
-  const AccountApp({super.key});
+/// Root widget for the Pockii application.
+class PockiiApp extends ConsumerWidget {
+  const PockiiApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -49,20 +49,20 @@ class AccountApp extends ConsumerWidget {
 
     return dbAsync.when(
       data: (_) => MaterialApp.router(
-        title: 'AccountApp',
+        title: 'Pockii',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light(),
         // darkTheme: AppTheme.dark(), // Post-MVP
         routerConfig: router,
       ),
       loading: () => MaterialApp(
-        title: 'AccountApp',
+        title: 'Pockii',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light(),
         home: const _LoadingScreen(),
       ),
       error: (error, stack) => MaterialApp(
-        title: 'AccountApp',
+        title: 'Pockii',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light(),
         home: _ErrorScreen(error: error),

@@ -68,7 +68,8 @@ class TransactionBottomSheet extends ConsumerStatefulWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (context) => TransactionBottomSheet(editTransaction: transaction),
+      builder: (context) =>
+          TransactionBottomSheet(editTransaction: transaction),
     );
   }
 
@@ -91,7 +92,8 @@ class _TransactionBottomSheetState
     if (widget.isEditMode) {
       final tx = widget.editTransaction!;
       _noteController.text = tx.note ?? '';
-      _amountController.text = tx.amountFcfa > 0 ? tx.amountFcfa.toString() : '';
+      _amountController.text =
+          tx.amountFcfa > 0 ? tx.amountFcfa.toString() : '';
       _selectedDate = tx.date;
 
       // Initialize the form provider with existing data after first frame
@@ -284,17 +286,6 @@ class _TransactionBottomSheetState
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Drag handle
-              Center(
-                child: Container(
-                  margin: const EdgeInsets.only(top: 12, bottom: 8),
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: AppColors.outlineVariant,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
 
               // Title with animated transition
               Padding(
@@ -372,7 +363,8 @@ class _TransactionBottomSheetState
                       color: AppColors.onSurfaceVariant,
                     ),
                     border: const OutlineInputBorder(),
-                    errorText: formState.showAmountError ? 'Montant requis' : null,
+                    errorText:
+                        formState.showAmountError ? 'Montant requis' : null,
                   ),
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,

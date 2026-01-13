@@ -1,8 +1,8 @@
-import 'package:accountapp/core/database/app_database.dart';
-import 'package:accountapp/core/database/daos/transactions_dao.dart';
-import 'package:accountapp/features/transactions/data/transaction_repository.dart';
-import 'package:accountapp/features/transactions/domain/models/transaction_model.dart';
-import 'package:accountapp/features/transactions/domain/models/transaction_type.dart';
+import 'package:pockii/core/database/app_database.dart';
+import 'package:pockii/core/database/daos/transactions_dao.dart';
+import 'package:pockii/features/transactions/data/transaction_repository.dart';
+import 'package:pockii/features/transactions/domain/models/transaction_model.dart';
+import 'package:pockii/features/transactions/domain/models/transaction_type.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

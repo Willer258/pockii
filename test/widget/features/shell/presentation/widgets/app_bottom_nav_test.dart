@@ -1,5 +1,5 @@
-import 'package:accountapp/core/router/app_router.dart';
-import 'package:accountapp/features/shell/presentation/widgets/app_bottom_nav.dart';
+import 'package:pockii/core/router/app_router.dart';
+import 'package:pockii/features/shell/presentation/widgets/app_bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';

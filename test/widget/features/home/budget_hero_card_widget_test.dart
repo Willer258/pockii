@@ -1,9 +1,9 @@
-import 'package:accountapp/core/database/app_database.dart';
-import 'package:accountapp/core/theme/budget_colors.dart';
-import 'package:accountapp/features/budget/domain/services/budget_calculation_service.dart';
-import 'package:accountapp/features/home/domain/models/budget_state.dart';
-import 'package:accountapp/features/home/presentation/providers/budget_provider.dart';
-import 'package:accountapp/features/home/presentation/widgets/budget_hero_card.dart';
+import 'package:pockii/core/database/app_database.dart';
+import 'package:pockii/core/theme/budget_colors.dart';
+import 'package:pockii/features/budget/domain/services/budget_calculation_service.dart';
+import 'package:pockii/features/home/domain/models/budget_state.dart';
+import 'package:pockii/features/home/presentation/providers/budget_provider.dart';
+import 'package:pockii/features/home/presentation/widgets/budget_hero_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';

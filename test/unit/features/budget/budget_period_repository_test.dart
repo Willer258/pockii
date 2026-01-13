@@ -1,7 +1,7 @@
-import 'package:accountapp/core/database/app_database.dart';
-import 'package:accountapp/core/database/daos/budget_periods_dao.dart';
-import 'package:accountapp/core/services/clock_service.dart';
-import 'package:accountapp/features/budget/data/repositories/budget_period_repository.dart';
+import 'package:pockii/core/database/app_database.dart';
+import 'package:pockii/core/database/daos/budget_periods_dao.dart';
+import 'package:pockii/core/services/clock_service.dart';
+import 'package:pockii/features/budget/data/repositories/budget_period_repository.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:flutter_test/flutter_test.dart';
 

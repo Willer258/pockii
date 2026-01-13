@@ -1,4 +1,4 @@
-import 'package:accountapp/features/subscriptions/domain/models/subscription_frequency.dart';
+import 'package:pockii/features/subscriptions/domain/models/subscription_frequency.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

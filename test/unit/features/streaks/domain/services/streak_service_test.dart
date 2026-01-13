@@ -1,8 +1,8 @@
-import 'package:accountapp/core/database/app_database.dart';
-import 'package:accountapp/core/database/daos/streaks_dao.dart';
-import 'package:accountapp/core/services/clock_service.dart';
-import 'package:accountapp/features/streaks/data/repositories/streak_repository.dart';
-import 'package:accountapp/features/streaks/domain/services/streak_service.dart';
+import 'package:pockii/core/database/app_database.dart';
+import 'package:pockii/core/database/daos/streaks_dao.dart';
+import 'package:pockii/core/services/clock_service.dart';
+import 'package:pockii/features/streaks/data/repositories/streak_repository.dart';
+import 'package:pockii/features/streaks/domain/services/streak_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

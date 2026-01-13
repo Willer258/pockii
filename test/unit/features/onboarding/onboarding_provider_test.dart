@@ -1,10 +1,10 @@
-import 'package:accountapp/core/database/app_database.dart';
-import 'package:accountapp/core/database/daos/app_settings_dao.dart';
-import 'package:accountapp/core/database/daos/budget_periods_dao.dart';
-import 'package:accountapp/core/database/database_provider.dart';
-import 'package:accountapp/core/services/clock_service.dart';
-import 'package:accountapp/features/onboarding/domain/models/onboarding_state.dart';
-import 'package:accountapp/features/onboarding/presentation/providers/onboarding_provider.dart';
+import 'package:pockii/core/database/app_database.dart';
+import 'package:pockii/core/database/daos/app_settings_dao.dart';
+import 'package:pockii/core/database/daos/budget_periods_dao.dart';
+import 'package:pockii/core/database/database_provider.dart';
+import 'package:pockii/core/services/clock_service.dart';
+import 'package:pockii/features/onboarding/domain/models/onboarding_state.dart';
+import 'package:pockii/features/onboarding/presentation/providers/onboarding_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 

@@ -1,4 +1,4 @@
-import 'package:accountapp/features/planned_expenses/presentation/providers/planned_expense_form_provider.dart';
+import 'package:pockii/features/planned_expenses/presentation/providers/planned_expense_form_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

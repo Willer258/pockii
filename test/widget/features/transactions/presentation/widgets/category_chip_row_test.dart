@@ -1,4 +1,4 @@
-import 'package:accountapp/features/transactions/presentation/widgets/category_chip_row.dart';
+import 'package:pockii/features/transactions/presentation/widgets/category_chip_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

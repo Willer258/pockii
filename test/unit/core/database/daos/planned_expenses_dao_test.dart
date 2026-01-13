@@ -1,5 +1,5 @@
-import 'package:accountapp/core/database/app_database.dart';
-import 'package:accountapp/core/database/daos/planned_expenses_dao.dart';
+import 'package:pockii/core/database/app_database.dart';
+import 'package:pockii/core/database/daos/planned_expenses_dao.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:flutter_test/flutter_test.dart';
 

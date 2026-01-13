@@ -118,7 +118,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     icon: Icons.account_balance_wallet,
                     title: 'Sais combien tu peux dépenser',
                     description:
-                        'AccountApp te montre ton budget restant en temps réel. '
+                        'Pockii te montre ton budget restant en temps réel. '
                         'Finis les fins de mois difficiles !',
                   ),
                   // Screen 2: Features

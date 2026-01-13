@@ -1,8 +1,8 @@
-import 'package:accountapp/core/database/app_database.dart';
-import 'package:accountapp/core/database/daos/app_settings_dao.dart';
-import 'package:accountapp/core/database/daos/transactions_dao.dart';
-import 'package:accountapp/core/services/clock_service.dart';
-import 'package:accountapp/core/services/pattern_unlock_service.dart';
+import 'package:pockii/core/database/app_database.dart';
+import 'package:pockii/core/database/daos/app_settings_dao.dart';
+import 'package:pockii/core/database/daos/transactions_dao.dart';
+import 'package:pockii/core/services/clock_service.dart';
+import 'package:pockii/core/services/pattern_unlock_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

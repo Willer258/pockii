@@ -1,4 +1,4 @@
-import 'package:accountapp/features/subscriptions/presentation/providers/subscriptions_list_provider.dart';
+import 'package:pockii/features/subscriptions/presentation/providers/subscriptions_list_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

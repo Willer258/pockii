@@ -218,13 +218,13 @@ class _AboutSection extends StatelessWidget {
       child: Column(
         children: [
           _SettingsTile(
-            title: 'accountapp',
+            title: 'Pockii',
             subtitle: 'Version 1.0.0',
           ),
           Divider(height: 1),
           _SettingsTile(
-            title: 'Gestion de budget',
-            subtitle: 'Simple et efficace',
+            title: 'Ton budget, simplifié',
+            subtitle: 'Gestion de budget simple et efficace',
           ),
         ],
       ),

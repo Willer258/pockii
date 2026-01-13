@@ -1,14 +1,14 @@
-import 'package:accountapp/core/database/app_database.dart';
-import 'package:accountapp/core/database/daos/budget_periods_dao.dart';
-import 'package:accountapp/core/database/daos/planned_expenses_dao.dart';
-import 'package:accountapp/core/database/daos/subscriptions_dao.dart';
-import 'package:accountapp/core/database/daos/transactions_dao.dart';
-import 'package:accountapp/core/services/clock_service.dart';
-import 'package:accountapp/features/budget/data/repositories/budget_period_repository.dart';
-import 'package:accountapp/features/budget/domain/services/budget_calculation_service.dart';
-import 'package:accountapp/features/planned_expenses/data/planned_expense_repository.dart';
-import 'package:accountapp/features/subscriptions/data/subscription_repository.dart';
-import 'package:accountapp/features/transactions/data/transaction_repository.dart';
+import 'package:pockii/core/database/app_database.dart';
+import 'package:pockii/core/database/daos/budget_periods_dao.dart';
+import 'package:pockii/core/database/daos/planned_expenses_dao.dart';
+import 'package:pockii/core/database/daos/subscriptions_dao.dart';
+import 'package:pockii/core/database/daos/transactions_dao.dart';
+import 'package:pockii/core/services/clock_service.dart';
+import 'package:pockii/features/budget/data/repositories/budget_period_repository.dart';
+import 'package:pockii/features/budget/domain/services/budget_calculation_service.dart';
+import 'package:pockii/features/planned_expenses/data/planned_expense_repository.dart';
+import 'package:pockii/features/subscriptions/data/subscription_repository.dart';
+import 'package:pockii/features/transactions/data/transaction_repository.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:flutter_test/flutter_test.dart';
 

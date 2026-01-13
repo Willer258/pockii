@@ -41,7 +41,7 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('accountapp'),
+        title: const Text('Pockii'),
         centerTitle: true,
       ),
       body: SafeArea(

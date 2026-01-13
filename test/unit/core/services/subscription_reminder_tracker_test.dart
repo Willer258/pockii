@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:accountapp/core/database/daos/app_settings_dao.dart';
-import 'package:accountapp/core/services/clock_service.dart';
-import 'package:accountapp/core/services/subscription_reminder_tracker.dart';
+import 'package:pockii/core/database/daos/app_settings_dao.dart';
+import 'package:pockii/core/services/clock_service.dart';
+import 'package:pockii/core/services/subscription_reminder_tracker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

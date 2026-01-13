@@ -1,4 +1,4 @@
-import 'package:accountapp/features/settings/presentation/dialogs/budget_edit_dialog.dart';
+import 'package:pockii/features/settings/presentation/dialogs/budget_edit_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

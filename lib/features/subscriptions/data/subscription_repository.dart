@@ -1,6 +1,6 @@
-import 'package:accountapp/core/database/app_database.dart';
-import 'package:accountapp/core/database/daos/subscriptions_dao.dart';
-import 'package:accountapp/core/database/database_provider.dart';
+import 'package:pockii/core/database/app_database.dart';
+import 'package:pockii/core/database/daos/subscriptions_dao.dart';
+import 'package:pockii/core/database/database_provider.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -20,7 +20,7 @@ import 'subscription_reminder_tracker.dart';
 
 /// Task identifiers for WorkManager background tasks.
 abstract class BackgroundTasks {
-  static const periodicTask = 'com.accountapp.periodic_task';
+  static const periodicTask = 'com.pockii.periodic_task';
   static const streakCheck = 'streak_check';
   static const budgetCheck = 'budget_check';
   static const subscriptionReminder = 'subscription_reminder';

@@ -17,13 +17,13 @@ class NotificationService {
 
   final FlutterLocalNotificationsPlugin _plugin;
 
-  static const _channelId = 'accountapp_notifications';
-  static const _channelName = 'Accountapp Notifications';
+  static const _channelId = 'pockii_notifications';
+  static const _channelName = 'Pockii Notifications';
   static const _channelDescription = 'Notifications for budget alerts and reminders';
 
   /// High priority channel for critical budget alerts.
-  static const _urgentChannelId = 'accountapp_urgent';
-  static const _urgentChannelName = 'Budget Alerts';
+  static const _urgentChannelId = 'pockii_urgent';
+  static const _urgentChannelName = 'Pockii Alertes';
   static const _urgentChannelDescription = 'Critical budget threshold notifications';
 
   bool _isInitialized = false;

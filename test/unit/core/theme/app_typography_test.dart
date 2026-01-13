@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:accountapp/core/theme/app_typography.dart';
+import 'package:pockii/core/theme/app_typography.dart';
 
 void main() {
   group('AppTypography', () {

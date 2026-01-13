@@ -7,13 +7,14 @@ abstract class AppConstants {
   // ==========================================================================
   // App Info
   // ==========================================================================
-  static const String appName = 'AccountApp';
+  static const String appName = 'Pockii';
+  static const String appTagline = 'Ton budget, simplifié';
   static const String appVersion = '0.1.0';
 
   // ==========================================================================
   // Database
   // ==========================================================================
-  static const String databaseName = 'accountapp.db';
+  static const String databaseName = 'pockii.db';
   static const int databaseVersion = 1;
 
   // ==========================================================================

@@ -1,5 +1,5 @@
-import 'package:accountapp/features/planned_expenses/domain/models/planned_expense_model.dart';
-import 'package:accountapp/features/planned_expenses/domain/models/planned_expense_status.dart';
+import 'package:pockii/features/planned_expenses/domain/models/planned_expense_model.dart';
+import 'package:pockii/features/planned_expenses/domain/models/planned_expense_status.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

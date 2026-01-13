@@ -1,4 +1,4 @@
-import 'package:accountapp/features/home/domain/models/budget_state.dart';
+import 'package:pockii/features/home/domain/models/budget_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:accountapp/core/database/app_database.dart';
-import 'package:accountapp/core/database/daos/app_settings_dao.dart';
-import 'package:accountapp/core/services/clock_service.dart';
+import 'package:pockii/core/database/app_database.dart';
+import 'package:pockii/core/database/daos/app_settings_dao.dart';
+import 'package:pockii/core/services/clock_service.dart';
 
 void main() {
   late AppDatabase db;

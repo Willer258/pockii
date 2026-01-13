@@ -1,10 +1,10 @@
-import 'package:accountapp/features/history/presentation/providers/history_provider.dart';
-import 'package:accountapp/features/history/presentation/screens/history_screen.dart';
-import 'package:accountapp/features/history/presentation/widgets/date_section_header.dart';
-import 'package:accountapp/features/history/presentation/widgets/transaction_tile.dart';
-import 'package:accountapp/features/transactions/domain/models/transaction_model.dart';
-import 'package:accountapp/features/transactions/domain/models/transaction_type.dart';
-import 'package:accountapp/shared/widgets/empty_state_widget.dart';
+import 'package:pockii/features/history/presentation/providers/history_provider.dart';
+import 'package:pockii/features/history/presentation/screens/history_screen.dart';
+import 'package:pockii/features/history/presentation/widgets/date_section_header.dart';
+import 'package:pockii/features/history/presentation/widgets/transaction_tile.dart';
+import 'package:pockii/features/transactions/domain/models/transaction_model.dart';
+import 'package:pockii/features/transactions/domain/models/transaction_type.dart';
+import 'package:pockii/shared/widgets/empty_state_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';

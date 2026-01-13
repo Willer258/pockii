@@ -1,5 +1,5 @@
-import 'package:accountapp/core/theme/app_colors.dart';
-import 'package:accountapp/features/history/presentation/widgets/date_section_header.dart';
+import 'package:pockii/core/theme/app_colors.dart';
+import 'package:pockii/features/history/presentation/widgets/date_section_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

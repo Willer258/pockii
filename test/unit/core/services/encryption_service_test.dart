@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:accountapp/core/services/encryption_service.dart';
-import 'package:accountapp/core/exceptions/app_exceptions.dart';
+import 'package:pockii/core/services/encryption_service.dart';
+import 'package:pockii/core/exceptions/app_exceptions.dart';
 
 import '../../../mocks/mock_secure_storage.dart';
 

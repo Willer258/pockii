@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:accountapp/features/onboarding/domain/models/onboarding_state.dart';
+import 'package:pockii/features/onboarding/domain/models/onboarding_state.dart';
 
 void main() {
   group('OnboardingState', () {

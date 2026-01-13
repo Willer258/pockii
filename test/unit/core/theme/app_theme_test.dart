@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:accountapp/core/theme/theme.dart';
+import 'package:pockii/core/theme/theme.dart';
 
 void main() {
   group('AppTheme', () {

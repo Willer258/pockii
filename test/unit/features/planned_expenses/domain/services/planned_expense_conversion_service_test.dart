@@ -1,9 +1,9 @@
-import 'package:accountapp/core/database/app_database.dart';
-import 'package:accountapp/core/database/daos/planned_expenses_dao.dart';
-import 'package:accountapp/core/database/daos/transactions_dao.dart';
-import 'package:accountapp/features/planned_expenses/data/planned_expense_repository.dart';
-import 'package:accountapp/features/planned_expenses/domain/services/planned_expense_conversion_service.dart';
-import 'package:accountapp/features/transactions/data/transaction_repository.dart';
+import 'package:pockii/core/database/app_database.dart';
+import 'package:pockii/core/database/daos/planned_expenses_dao.dart';
+import 'package:pockii/core/database/daos/transactions_dao.dart';
+import 'package:pockii/features/planned_expenses/data/planned_expense_repository.dart';
+import 'package:pockii/features/planned_expenses/domain/services/planned_expense_conversion_service.dart';
+import 'package:pockii/features/transactions/data/transaction_repository.dart';
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:flutter_test/flutter_test.dart';
 
