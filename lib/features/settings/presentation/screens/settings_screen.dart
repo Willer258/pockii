@@ -7,6 +7,8 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/utils/fcfa_formatter.dart';
 import '../../../budget/data/repositories/budget_period_repository.dart';
+import '../../../home/presentation/providers/budget_provider.dart';
+import '../../../home/presentation/widgets/budget_animation/budget_animation_widget.dart';
 import '../../../planned_expenses/presentation/providers/planned_expenses_list_provider.dart';
 import '../../../subscriptions/presentation/providers/subscriptions_list_provider.dart'
     show activeSubscriptionsProvider, totalMonthlyAmountProvider;
@@ -36,6 +38,10 @@ class SettingsScreen extends ConsumerWidget {
         children: [
           // Budget Section
           _BudgetSection(),
+          const SizedBox(height: AppSpacing.lg),
+
+          // Appearance Section
+          _AppearanceSection(),
           const SizedBox(height: AppSpacing.lg),
 
           // Subscriptions Section
@@ -106,6 +112,8 @@ class _BudgetSection extends ConsumerWidget {
         await repository.updatePeriodBudget(period.id, newBudget);
         // Invalidate to refresh the UI
         ref.invalidate(_currentPeriodProvider);
+        // Refresh the budget state on home screen
+        await ref.read(budgetStateProvider.notifier).refresh();
 
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -114,6 +122,18 @@ class _BudgetSection extends ConsumerWidget {
         }
       }
     }
+  }
+}
+
+/// Appearance section with animation style selector.
+class _AppearanceSection extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return _SettingsSection(
+      title: 'Apparence',
+      icon: Icons.palette_outlined,
+      child: const BudgetAnimationSelector(),
+    );
   }
 }
 

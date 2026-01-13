@@ -40,10 +40,6 @@ class HomeScreen extends ConsumerWidget {
     final summaryAsync = ref.watch(monthSummaryProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pockii'),
-        centerTitle: true,
-      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.screenPadding),
